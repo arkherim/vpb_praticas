@@ -2,6 +2,12 @@
 ## VPB App: Sistema de Orçamento Doméstico
 
 Documentação técnica do projeto.
+---
+
+## Definição
+
+- [Documento de Requisitos de Software ](./docs/requisitos.md)  
+  _Requisitos Funcionais e Não Funcionais_
 
 ---
 
