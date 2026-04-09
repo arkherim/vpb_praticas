@@ -1,7 +1,6 @@
 # Documentação:
 ## VPB App: Sistema de Orçamento Doméstico
 
-Documentação técnica do projeto.
 ---
 
 ## Definição
