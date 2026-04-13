@@ -5,7 +5,7 @@
 
 ## Definição
 
-- [Documento de Requisitos de Software ](./docs/requisitos.md)  
+- [Documento de Requisitos de Software ](./docs/REQUISITOS.md)  
   _Requisitos Funcionais e Não Funcionais_
 
 ---
