@@ -1,16 +1,13 @@
-# Documentação:
-## VPB App: Sistema de Orçamento Doméstico
+# VPB App: Sistema de Orçamento Doméstico
+## Documentação:
 
----
 
-## Definição
+### Definição
 
 - [Documento de Requisitos de Software ](./docs/requisitos.md)  
   _Requisitos Funcionais e Não Funcionais_
 
----
-
-## Modelagem
+### Modelagem
 
 - [Modelo ER Conceitual](./docs/er_conceitual.md)  
   _Entidades e relacionamentos de alto nível_
@@ -21,9 +18,7 @@
 - [Diagrama de Classes](./docs/classes.md)  
   _Estrutura orientada a objetos_
 
----
-
-## Comportamento do Sistema
+### Comportamento do Sistema
 
 - [Diagrama de Caso de Uso](./docs/use_cases.md)  
   _Interações do usuário com o sistema_
@@ -33,5 +28,3 @@
 
 - [Diagrama de Atividades](./docs/activities.md)  
   _Fluxos operacionais_
-
----
