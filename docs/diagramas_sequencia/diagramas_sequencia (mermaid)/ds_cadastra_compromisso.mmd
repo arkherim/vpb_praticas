@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+ 
+    U->>F: Preenche formulário (tipo, valor, vencimento, categoria, descrição)
+    F->>API: POST /agendamentos {tipo, valor, vencimento, id_categoria, descricao}
+    API->>API: Valida dados
+    alt Dados válidos
+        API->>DB: INSERT INTO agendamento (status = 'pendente')
+        DB-->>API: Retorna agendamento criado
+        API-->>F: 201 Created
+        F-->>U: Exibe compromisso na listagem de pendentes
+    else Dados inválidos
+        API-->>F: 422 Unprocessable Entity
+        F-->>U: Exibe erros de validação
+    end
