@@ -11,6 +11,8 @@ Disciplina: Práticas Extensionistas III
 - **[Victor Lermen](https://github.com/arkherim)** - Código: 230647  
   Curso: Ciência de Dados e Inteligência Artificial
 
+## Documentação Consolidada
+- [Relatório Final (PDF)](./docs/misc/Victor%20e%20Bianca%20-%20Praticas%203.pdf)
 
 ## Definição
 
