@@ -1,4 +1,17 @@
-# VPB App: Sistema de Orçamento Doméstico
+## UNIVERSIDADE DO OESTE DE SANTA CATARINA - UNOESC
+## Disciplina
+### Práticas Extensionistas III
+
+## Projeto
+### Sistema de Gestão Financeira Doméstica
+
+### Alunos
+- **[Bianca Aparecida de Almeida Pinto Paz](https://github.com/AkianBiah)** - Código: 447086  
+  Curso: Análise e Desenvolvimento de Sistemas
+
+- **[Victor Lermen](https://github.com/arkherim)** - Código: 230647  
+  Curso: Ciência de Dados e Inteligência Artificial
+
 
 ## Definição
 
@@ -26,17 +39,19 @@
 
 ### Diagrama de Classes
   _Estrutura orientada a objetos_
-- PNG: [diagrama_classes.png](./docs/diagrama_classes/diagrama_classes.png)  
-- Draw.io: [arquivo compartilhado](https://drive.google.com/file/d/1e8C0G9d5Brp17dtFdTj24V11x80_-FJ7/view?usp=sharing)
+- [PNG](./docs/diagrama_classes/diagrama_classes.png)
+- [Draw.io](https://drive.google.com/file/d/1e8C0G9d5Brp17dtFdTj24V11x80_-FJ7/view?usp=sharing)
 
 ## Comportamento do Sistema
 
-- [Diagrama de Caso de Uso](./docs/use_cases.md)  
+### Diagrama de Caso de Uso
   _Interações do usuário com o sistema_
+- [PNG](./docs/casos_uso/caso_de_uso.png)
+- [Draw.io](https://drive.google.com/file/d/1iHfiFqNoQ5LtXj-A47aXPQS5wJPPy6DA/view?usp=sharing)
 
 - Diagramas de Sequência  
   _Fluxo entre componentes_
-  - Diagramas Agrupados: [diagrama_sequencia.md](./docs/diagramas_sequencia/diagrama_sequencia.md)
+  - [Diagramas Agrupados](./docs/diagramas_sequencia/diagrama_sequencia.md)
   - PNG:
     - [Login](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_login.png)
     - [Cadastro de Conta](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_conta_bancaria.png)
@@ -54,7 +69,7 @@
 
 - Diagramas de Atividades  
   _Fluxos operacionais_
-  - Diagramas Agrupados (Draw.io): [arquivo compartilhado](https://drive.google.com/file/d/17XBYSKx-MPohxVqGwh1fZZ2NcCwamuKk/view)
+  - [Diagramas Agrupados (Draw.io)](https://drive.google.com/file/d/17XBYSKx-MPohxVqGwh1fZZ2NcCwamuKk/view)
   - PNG:
     - [Login](./docs/diagrama_atividades/da_cadastro_login.png)
     - [Cadastro de Conta](./docs/diagrama_atividades/da_cadastro_conta_bancaria.png)
