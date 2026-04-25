@@ -1,4 +1,4 @@
-# Projeto :Sistema de Gestão Financeira Doméstica
+# Projeto: Sistema de Gestão Financeira Doméstica
 
 UNIVERSIDADE DO OESTE DE SANTA CATARINA - UNOESC
 
