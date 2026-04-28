@@ -20,7 +20,6 @@ Disciplina: Práticas Extensionistas III
 - Back-end: [Python](https://www.python.org/)
 - Front-End: [React](https://react.dev/)
 - SGDB: [PostgreSQL](https://www.postgresql.org/)
-- Containerização: [Docker](https://www.docker.com/)
 
 ### Documento de Requisitos de Software
 - [requisitos.md](./docs/REQUISITOS.md)  
