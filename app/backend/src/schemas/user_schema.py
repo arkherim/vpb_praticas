@@ -1,16 +1,17 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel
+from typing import Any, Optional
 
 class UserBase(BaseModel):
     name: str
-    email: EmailStr
+    email: str
 
-class UserCreate(UserBase):
-    password: str
+class UserCreate(BaseModel):
+    name: Any = None
+    email: Any = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     password: Optional[str] = None
 
 class UserResponse(UserBase):

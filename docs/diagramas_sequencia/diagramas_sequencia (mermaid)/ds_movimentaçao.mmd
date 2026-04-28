@@ -1,0 +1,21 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+
+    U->>F: Preenche formulário (tipo, valor, data, categoria, conta)
+    F->>API: POST /transacoes {tipo, valor, data, id_categoria, id_conta}
+    API->>API: Valida dados 
+    API->>DB: SELECT conta WHERE id = id_conta
+    DB-->>API: Retorna conta
+    alt Dados válidos
+        API->>DB: INSERT INTO transacao
+        API->>DB: UPDATE conta SET saldo = saldo ± valor
+        DB-->>API: OK
+        API-->>F: 201 Created {transacao}
+        F-->>U: Exibe movimentação na listagem
+    else Dados inválidos
+        API-->>F: 422 Unprocessable Entity
+        F-->>U: Exibe erros de validação
+    end

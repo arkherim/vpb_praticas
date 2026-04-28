@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+
+    U->>F: Informa e-mail e senha
+    F->>API: POST /auth/login {email, senha}
+    API->>DB: SELECT usuario WHERE email = ?
+    DB-->>API: Retorna usuário
+    alt Credenciais válidas
+        API->>API: Valida senha_hash
+        API-->>F: 200 OK
+        F-->>U: Redireciona para Dashboard
+    else Credenciais inválidas
+        API-->>F: 401 Unauthorized
+        F-->>U: Exibe mensagem de erro
+    end

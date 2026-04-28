@@ -1,30 +1,73 @@
-# VPB App: Sistema de Orçamento Doméstico
-## Documentação:
+# Projeto: Sistema de Gestão Financeira Doméstica
 
+UNIVERSIDADE DO OESTE DE SANTA CATARINA - UNOESC
+
+Disciplina: Práticas Extensionistas III
+
+## Alunos
+- **[Bianca Aparecida de Almeida Pinto Paz](https://github.com/AkianBiah)** - Código: 447086  
+  Curso: Análise e Desenvolvimento de Sistemas
+
+- **[Victor Lermen](https://github.com/arkherim)** - Código: 230647  
+  Curso: Ciência de Dados e Inteligência Artificial
+
+## Documentação Consolidada
+- [Relatório Final (PDF)](./docs/misc/Victor%20e%20Bianca%20-%20Praticas%203.pdf)
 
 ### Definição
 
-- [Documento de Requisitos de Software ](./docs/requisitos.md)  
-  _Requisitos Funcionais e Não Funcionais_
+### Stack de desenvolvimento:
+- Back-end: [Python](https://www.python.org/)
+- Front-End: [React](https://react.dev/)
+- SGDB: [PostgreSQL](https://www.postgresql.org/)
+- Containerização: [Docker](https://www.docker.com/)
 
-### Modelagem
+### Documento de Requisitos de Software
+- [requisitos.md](./docs/REQUISITOS.md)  
 
-- [Modelo ER Conceitual](./docs/er_conceitual.md)  
-  _Entidades e relacionamentos de alto nível_
+## Modelagem
 
-- [Modelo ER Lógico](./docs/er_logico.md)  
-  _Estrutura detalhada para implementação_
+### Modelo ER Conceitual
+- [PNG](./docs/er_conceitual/ER_Conceitual.png)
+- [BRModelo (.brM3)](./docs/er_conceitual/ER_Conceitual.brM3)
 
-- [Diagrama de Classes](./docs/classes.md)  
-  _Estrutura orientada a objetos_
+### Modelo ER Lógico
+- [PNG](./docs/er_logico/ER_Logico.png)
+- [BRModelo (.brM3)](./docs/er_logico/ER_Logico.brM3)
 
-### Comportamento do Sistema
+### Diagrama de Classes
+- [PNG](./docs/diagrama_classes/diagrama_classes.png)
+- [Draw.io](https://drive.google.com/file/d/1e8C0G9d5Brp17dtFdTj24V11x80_-FJ7/view?usp=sharing)
 
-- [Diagrama de Caso de Uso](./docs/use_cases.md)  
-  _Interações do usuário com o sistema_
+## Comportamento do Sistema
 
-- [Diagrama de Sequência](./docs/sequence.md)  
-  _Fluxo entre componentes_
+### Diagrama de Caso de Uso
+- [PNG](./docs/casos_uso/caso_de_uso.png)
+- [Draw.io](https://drive.google.com/file/d/1iHfiFqNoQ5LtXj-A47aXPQS5wJPPy6DA/view?usp=sharing)
 
-- [Diagrama de Atividades](./docs/activities.md)  
-  _Fluxos operacionais_
+### Diagramas de Sequência
+- [Diagramas Agrupados](./docs/diagramas_sequencia/diagrama_sequencia.md)
+- PNG:
+    - [Login](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_login.png)
+    - [Cadastro de Conta](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_conta_bancaria.png)
+    - [Cadastro de Movimentação](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_movimentaçao.png)
+    - [Cadastro de Compromisso](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/ds_cadastra_compromisso.png)
+    - [Confirma Pagamento do Compromisso](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/confirma_compromisso.png)
+    - [Relatório Mensal](./docs/diagramas_sequencia/diagramas_sequencia%20(png)/exibe_relatorio.png)
+- Mermaid (.mmd):
+    - [Login](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/ds_login.mmd)
+    - [Cadastro de Conta](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/ds_conta_bancaria.mmd)
+    - [Cadastro de Movimentação](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/ds_movimentaçao.mmd)
+    - [Cadastro de Compromisso](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/ds_cadastra_compromisso.mmd)
+    - [Confirma Pagamento do Compromisso](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/confirma_compromisso.mmd)
+    - [Relatório Mensal](./docs/diagramas_sequencia/diagramas_sequencia%20(mermaid)/exibe%20relatorio.mmd)
+
+### Diagramas de Atividades
+- [Diagramas Agrupados (Draw.io)](https://drive.google.com/file/d/17XBYSKx-MPohxVqGwh1fZZ2NcCwamuKk/view)
+- PNG:
+    - [Login](./docs/diagrama_atividades/da_cadastro_login.png)
+    - [Cadastro de Conta](./docs/diagrama_atividades/da_cadastro_conta_bancaria.png)
+    - [Cadastro de Movimentação](./docs/diagrama_atividades/da_cadastro_transacao.png)
+    - [Cadastro de Compromisso](./docs/diagrama_atividades/da_cadastro_compromisso.png)
+    - [Pagamento de Compromisso](./docs/diagrama_atividades/da_pagamento_compromisso.png)
+    - [Relatório](./docs/diagrama_atividades/da_relatorio.png)

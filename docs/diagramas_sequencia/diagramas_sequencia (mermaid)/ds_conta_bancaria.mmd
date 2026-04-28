@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+
+    U->>F: Preenche formulário de conta
+    F->>API: POST /contas {banco, agencia, numero_conta, tipo}
+    API->>API: Valida payload
+    alt Dados válidos
+        API->>DB: INSERT INTO conta
+        DB-->>API: Retorna conta criada
+        API-->>F: 201 Created
+        F-->>U: Exibe conta na listagem
+    else Dados inválidos
+        API-->>F: 422 Unprocessable Entity
+        F-->>U: Exibe erros de validação
+    end

@@ -1,0 +1,16 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+
+    U->>F: Clica em "Confirmar pagamento" no compromisso e seleciona conta
+    F->>API: PATCH /agendamentos/{id}/confirmar {id_conta}
+    API->>DB: SELECT agendamento WHERE id = ?
+    DB-->>API: Retorna agendamento
+    API->>DB: INSERT INTO transacao
+    API->>DB: UPDATE conta SET saldo = saldo ± valor
+    API->>DB: UPDATE agendamento SET status = 'confirmado'
+    DB-->>API: OK
+    API-->>F: 201 Created
+    F-->>U: Compromisso marcado como confirmado

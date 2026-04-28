@@ -1,0 +1,14 @@
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend
+    participant API as API
+    participant DB as Banco de Dados
+
+    U->>F: Seleciona mês e ano no filtro
+    F->>API: GET /relatorios/mensal?mes=4&ano=2026
+    API->>DB: SELECT SUM(valor) WHERE tipo='receita' AND mes/ano
+    API->>DB: SELECT SUM(valor) WHERE tipo='despesa' AND mes/ano
+    API->>DB: SELECT SUM(valor) GROUP BY id_categoria AND mes/ano
+    DB-->>API: Retorna totais e breakdown por categoria
+    API-->>F: 200 OK {receitas, despesas, saldo, por_categoria}
+    F-->>U: Exibe resumo e gráfico
