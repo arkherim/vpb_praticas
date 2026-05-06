@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 
 from fastapi import HTTPException
@@ -41,7 +42,7 @@ def validate_decimal_value(value, field_name: str) -> Decimal:
 
 
 def validate_user_exists(db: Session, user_id: int) -> None:
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == user_id, User.deleted_at.is_(None)).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -96,3 +97,46 @@ def create_account_service(
         validated_account_type,
         validated_balance,
     )
+
+
+def list_accounts_service(db: Session, user_id: int = None) -> list:
+    """
+    Lista todas as contas bancárias ou contas de um usuário específico.
+
+    Args:
+        db (Session): Sessão do banco de dados.
+        user_id (int): ID do usuário (opcional). Se fornecido, retorna apenas as contas do usuário.
+
+    Returns:
+        list: Lista de contas.
+    """
+    if user_id is not None:
+        validate_user_exists(db, user_id)
+        return db.query(Account).filter(Account.user_id == user_id, Account.deleted_at.is_(None)).all()
+    return db.query(Account).filter(Account.deleted_at.is_(None)).all()
+
+
+def get_account_by_id_service(db: Session, account_id: int):
+    """
+    Obtém uma conta específica pelo ID.
+
+    Args:
+        db (Session): Sessão do banco de dados.
+        account_id (int): ID da conta.
+
+    Returns:
+        Account: Objeto da conta ou None se não encontrada.
+    """
+    account = db.query(Account).filter(Account.id == account_id, Account.deleted_at.is_(None)).first()
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
+
+
+def delete_account_service(db: Session, account_id: int) -> None:
+    account = db.query(Account).filter(Account.id == account_id, Account.deleted_at.is_(None)).first()
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+
+    account.deleted_at = datetime.now(timezone.utc)
+    db.commit()

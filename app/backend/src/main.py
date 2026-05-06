@@ -3,18 +3,21 @@ import logging
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
 
 from backend.src import models  # noqa: F401
-from backend.src.routes.account_routes import router as account_router
-from backend.src.routes.health_routes import router as health_router
 from backend.src.routes.user_routes import router as user_router
-from backend.src.core.database import Base, engine
+from backend.src.routes.account_routes import router as account_router
+from backend.src.routes.schedule_routes import router as schedule_router
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+openapi_tags = [
+    {"name": "users", "description": "Operacoes relacionadas a usuarios e autenticacao."},
+    {"name": "accounts", "description": "Operacoes de CRUD e consulta de contas financeiras."},
+    {"name": "schedules", "description": "Operacoes de CRUD de compromissos financeiros."},
+]
 
+app = FastAPI(openapi_tags=openapi_tags)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc: RequestValidationError):
@@ -35,13 +38,15 @@ async def validation_exception_handler(request, exc: RequestValidationError):
     return JSONResponse(status_code=422, content={"detail": errors})
 
 
-@app.on_event("startup")
-def startup() -> None:
-    try:
-        Base.metadata.create_all(bind=engine)
-    except SQLAlchemyError:
-        logger.warning("Database initialization skipped because the connection is unavailable.")
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc: Exception):
+    logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"}
+    )
 
-app.include_router(health_router)
+
 app.include_router(account_router)
+app.include_router(schedule_router)
 app.include_router(user_router)

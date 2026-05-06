@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 
 from backend.src.core.database import Base
@@ -15,6 +15,7 @@ class Account(TimestampMixin, Base):
     account_number = Column("numero_conta", String(30), nullable=False)
     account_type = Column("tipo", String(20), nullable=False)
     balance = Column("saldo", Numeric(12, 2), nullable=False, default=0)
+    deleted_at = Column("excluido_em", DateTime(timezone=True), nullable=True)
 
     user = relationship("User", back_populates="accounts")
     transactions = relationship("Transaction", back_populates="account")
