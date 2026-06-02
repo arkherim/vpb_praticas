@@ -16,7 +16,7 @@ router = APIRouter(tags=["users"])
 
 @router.post("/users", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return create_user_service(db, user.name, user.email)
+    return create_user_service(db, user.name, user.email, user.password)
 
 
 @router.get("/users")

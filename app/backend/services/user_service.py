@@ -9,7 +9,7 @@ from app.backend.models.account import Account
 from app.backend.models.user import User
 
 
-def create_user_service(db: Session, name: str, email: str) -> User:
+def create_user_service(db: Session, name: str, email: str, password: str) -> User:
     """
     Cria um novo usuário no banco de dados.
 
@@ -21,7 +21,12 @@ def create_user_service(db: Session, name: str, email: str) -> User:
     Returns:
         User: Objeto do usuário criado.
     """
-    user = User(name=name, email=email, password="default")
+    # Prevent duplicate emails
+    existing = db.query(User).filter(User.email == email, User.deleted_at.is_(None)).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+
+    user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
     db.refresh(user)
