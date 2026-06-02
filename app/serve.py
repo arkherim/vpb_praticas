@@ -159,7 +159,7 @@ if __name__ == "__main__":
 
     import uvicorn
 
-    host = os.getenv("HOST", "127.0.0.1")
+    host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8000"))
     reload_enabled = os.getenv("UVICORN_RELOAD", "true").lower() in {"1", "true", "yes"}
 
@@ -169,3 +169,4 @@ if __name__ == "__main__":
 
     check_database_before_start()
     uvicorn.run("app.backend.main:app", host=host, port=port, reload=reload_enabled)
+
