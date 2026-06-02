@@ -71,3 +71,9 @@ Disciplina: Práticas Extensionistas III
     - [Cadastro de Compromisso](./docs/diagrama_atividades/da_cadastro_compromisso.png)
     - [Pagamento de Compromisso](./docs/diagrama_atividades/da_pagamento_compromisso.png)
     - [Relatório](./docs/diagrama_atividades/da_relatorio.png)
+
+## Deploy no Render
+- Root do Render: `app/backend`
+- Build: `pip install -r requirements.txt`
+- Start: `python serve.py`
+- Variáveis esperadas: `DATABASE_URL`, `HOST=0.0.0.0`, `PORT`

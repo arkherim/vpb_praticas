@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 APP_DIR = Path(__file__).resolve().parent
-REQUIREMENTS_FILE = APP_DIR / "backend" / "src" / "requirements.txt"
+REQUIREMENTS_FILE = APP_DIR / "backend" / "requirements.txt"
 
 
 def normalize_requirement_name(requirement_line: str) -> str | None:
@@ -127,8 +127,8 @@ def check_database_before_start() -> None:
     from sqlalchemy import text
     from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
-    from backend.src import models  # noqa: F401
-    from backend.src.core.database import Base, SessionLocal, engine
+    from app.backend import models  # noqa: F401
+    from app.backend.core.database import Base, SessionLocal, engine
 
     try:
         with SessionLocal() as session:
@@ -168,4 +168,4 @@ if __name__ == "__main__":
         raise SystemExit(1)
 
     check_database_before_start()
-    uvicorn.run("backend.src.main:app", host=host, port=port, reload=reload_enabled)
+    uvicorn.run("app.backend.main:app", host=host, port=port, reload=reload_enabled)

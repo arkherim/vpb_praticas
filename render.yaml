@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: vpb-praticas
+    env: python
+    rootDir: app/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python serve.py
+    autoDeploy: true
