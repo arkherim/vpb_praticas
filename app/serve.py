@@ -115,6 +115,15 @@ def ensure_soft_delete_columns(engine, text) -> None:
     with engine.begin() as connection:
         if dialect_name == "sqlite":
             for table_name in ("usuario", "conta"):
+                table_exists = connection.execute(
+                    text(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name=:table"
+                    ),
+                    {"table": table_name},
+                ).fetchone()
+                if not table_exists:
+                    continue
+
                 columns = {
                     row[1]
                     for row in connection.execute(text(f"PRAGMA table_info({table_name})")).fetchall()
