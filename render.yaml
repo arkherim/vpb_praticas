@@ -2,6 +2,7 @@ services:
   - type: web
     name: vpb-praticas
     env: python
+    runtime: python-3.11
     rootDir: app/backend
     buildCommand: pip install -r requirements.txt
     startCommand: python serve.py

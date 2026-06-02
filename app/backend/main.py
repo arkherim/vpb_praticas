@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from starlette.responses import JSONResponse
+from fastapi.responses import JSONResponse
 
 from app.backend import models  # noqa: F401
 from app.backend.routes.user_routes import router as user_router
