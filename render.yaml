@@ -5,5 +5,5 @@ services:
     runtime: python-3.11
     rootDir: .
     buildCommand: pip install -r app/backend/requirements.txt
-    startCommand: python app/serve.py
+    startCommand: python -m app.serve
     autoDeploy: true

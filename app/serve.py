@@ -56,11 +56,11 @@ def validate_installed_requirements() -> None:
 
 
 def should_run_startup_tests() -> bool:
-    run_tests_env = os.getenv("RUN_STARTUP_TESTS")
+    run_tests_env = os.environ.get("RUN_STARTUP_TESTS")
     if run_tests_env is not None:
         return run_tests_env.strip().lower() in {"1", "true", "yes", "y", "s", "sim"}
 
-    app_env = os.getenv("APP_ENV", "local").strip().lower()
+    app_env = os.environ.get("APP_ENV", "local").strip().lower()
     if app_env in {"production", "render", "deploy"}:
         return False
 
@@ -140,7 +140,7 @@ def check_database_before_start() -> None:
         with SessionLocal() as session:
             session.execute(text("SELECT 1"))
 
-        auto_create_schema = os.getenv("AUTO_CREATE_SCHEMA", "true").strip().lower() in {
+        auto_create_schema = os.environ.get("AUTO_CREATE_SCHEMA", "true").strip().lower() in {
             "1",
             "true",
             "yes",
@@ -166,9 +166,9 @@ if __name__ == "__main__":
 
     import uvicorn
 
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", "8000"))
-    reload_enabled = os.getenv("UVICORN_RELOAD", "true").lower() in {"1", "true", "yes"}
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", 8000))
+    reload_enabled = os.environ.get("UVICORN_RELOAD", "true").lower() in {"1", "true", "yes"}
 
     if should_run_startup_tests() and not run_startup_tests():
         print("Os testes falharam. O servidor nao sera iniciado.")
