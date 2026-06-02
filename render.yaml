@@ -3,7 +3,7 @@ services:
     name: vpb-praticas
     env: python
     runtime: python-3.11
-    rootDir: app/backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: python serve.py
+    rootDir: .
+    buildCommand: pip install -r app/backend/requirements.txt
+    startCommand: python app/serve.py
     autoDeploy: true
