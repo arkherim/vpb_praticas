@@ -36,7 +36,9 @@ def get_database_url() -> str:
             f"?sslmode={sslmode}&channel_binding={channel_binding}"
         )
 
-    raise RuntimeError("DATABASE_URL or DATABASE_PATH environment variable is required.")
+    raise RuntimeError(
+        "DATABASE_URL, DATABASE_PATH, or PostgreSQL PG* environment variables are required."
+    )
 
 
 DATABASE_URL = get_database_url()

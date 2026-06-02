@@ -175,14 +175,14 @@ if __name__ == "__main__":
 
     import uvicorn
 
-    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", 8000))
-    reload_enabled = os.environ.get("UVICORN_RELOAD", "true").lower() in {"1", "true", "yes"}
 
     if should_run_startup_tests() and not run_startup_tests():
         print("Os testes falharam. O servidor nao sera iniciado.")
         raise SystemExit(1)
 
     check_database_before_start()
-    uvicorn.run("app.backend.main:app", host=host, port=port, reload=reload_enabled)
+    # Render requires binding to 0.0.0.0 and uses PORT from environment.
+    # Do not enable the auto-reloader in production services like Render.
+    uvicorn.run("app.backend.main:app", host="0.0.0.0", port=port)
 

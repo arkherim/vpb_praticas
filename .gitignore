@@ -52,7 +52,9 @@ yarn-error.log
 .pytest_cache/
 .coverage
 htmlcov/
+*.log
 
 # Database
 *.db
 *.sqlite
+*.sqlite3
