@@ -24,7 +24,7 @@ def create_user_service(db: Session, name: str, email: str, password: str) -> Us
     # Prevent duplicate emails
     existing = db.query(User).filter(User.email == email, User.deleted_at.is_(None)).first()
     if existing:
-        raise HTTPException(status_code=400, detail="User with this email already exists")
+        raise HTTPException(status_code=400, detail="Usuário com este email já existe")
 
     user = User(name=name, email=email, password=password)
     db.add(user)
@@ -60,7 +60,7 @@ def update_user_password_service(db: Session, user_id: int, new_password: str) -
     """
     user = db.query(User).filter(User.id == user_id, User.deleted_at.is_(None)).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     user.password = new_password
     db.commit()
@@ -86,10 +86,10 @@ def login_service(db: Session, email: str, password: str) -> User:
     user = db.query(User).filter(User.email == email, User.deleted_at.is_(None)).first()
     
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail="Email ou senha inválidos")
     
     if user.password != password:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail="Email ou senha inválidos")
     
     return user
 
@@ -97,7 +97,7 @@ def login_service(db: Session, email: str, password: str) -> User:
 def delete_user_service(db: Session, user_id: int) -> None:
     user = db.query(User).filter(User.id == user_id, User.deleted_at.is_(None)).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     deletion_time = datetime.now(timezone.utc)
     user.deleted_at = deletion_time

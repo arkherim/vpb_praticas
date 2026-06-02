@@ -10,41 +10,41 @@ from app.backend.models.user import User
 
 def validate_required_string(value, field_name: str) -> str:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, str):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be a string")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser uma string")
 
     normalized_value = value.strip()
     if not normalized_value:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be empty")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode estar vazio")
 
     return normalized_value
 
 
 def validate_required_integer(value, field_name: str) -> int:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, int) or isinstance(value, bool):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be an integer")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser um inteiro")
     if value <= 0:
-        raise HTTPException(status_code=400, detail=f"{field_name} must be greater than zero")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser maior que zero")
     return value
 
 
 def validate_decimal_value(value, field_name: str) -> Decimal:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
 
     try:
         return Decimal(str(value))
     except (InvalidOperation, ValueError):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be a valid decimal")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser um decimal válido")
 
 
 def validate_user_exists(db: Session, user_id: int) -> None:
     user = db.query(User).filter(User.id == user_id, User.deleted_at.is_(None)).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
 
 def create_account(
@@ -100,16 +100,6 @@ def create_account_service(
 
 
 def list_accounts_service(db: Session, user_id: int = None) -> list:
-    """
-    Lista todas as contas bancárias ou contas de um usuário específico.
-
-    Args:
-        db (Session): Sessão do banco de dados.
-        user_id (int): ID do usuário (opcional). Se fornecido, retorna apenas as contas do usuário.
-
-    Returns:
-        list: Lista de contas.
-    """
     if user_id is not None:
         validate_user_exists(db, user_id)
         return db.query(Account).filter(Account.user_id == user_id, Account.deleted_at.is_(None)).all()
@@ -117,26 +107,16 @@ def list_accounts_service(db: Session, user_id: int = None) -> list:
 
 
 def get_account_by_id_service(db: Session, account_id: int):
-    """
-    Obtém uma conta específica pelo ID.
-
-    Args:
-        db (Session): Sessão do banco de dados.
-        account_id (int): ID da conta.
-
-    Returns:
-        Account: Objeto da conta ou None se não encontrada.
-    """
     account = db.query(Account).filter(Account.id == account_id, Account.deleted_at.is_(None)).first()
     if account is None:
-        raise HTTPException(status_code=404, detail="Account not found")
+        raise HTTPException(status_code=404, detail="Conta não encontrada")
     return account
 
 
 def delete_account_service(db: Session, account_id: int) -> None:
     account = db.query(Account).filter(Account.id == account_id, Account.deleted_at.is_(None)).first()
     if account is None:
-        raise HTTPException(status_code=404, detail="Account not found")
+        raise HTTPException(status_code=404, detail="Conta não encontrada")
 
     account.deleted_at = datetime.now(timezone.utc)
     db.commit()

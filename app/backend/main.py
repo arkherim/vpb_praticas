@@ -35,7 +35,7 @@ async def validation_exception_handler(request, exc: RequestValidationError):
         if error["type"] == "string_type" and error.get("input") is None:
             errors.append({
                 "field": field_name,
-                "message": f"{field_name} cannot be null",
+                "message": f"O campo {field_name} não pode ser nulo",
             })
         else:
             errors.append({
@@ -51,7 +51,7 @@ async def generic_exception_handler(request, exc: Exception):
     logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error"}
+        content={"detail": "Erro interno do servidor"}
     )
 
 

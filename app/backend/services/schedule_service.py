@@ -12,11 +12,11 @@ from app.backend.models.user import User
 
 def validate_required_integer(value, field_name: str) -> int:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, int) or isinstance(value, bool):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be an integer")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser um inteiro")
     if value <= 0:
-        raise HTTPException(status_code=400, detail=f"{field_name} must be greater than zero")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser maior que zero")
     return value
 
 
@@ -28,13 +28,13 @@ def validate_optional_integer(value, field_name: str) -> int | None:
 
 def validate_required_string(value, field_name: str) -> str:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, str):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be a string")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser uma string")
 
     normalized_value = value.strip()
     if not normalized_value:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be empty")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode estar vazio")
 
     return normalized_value
 
@@ -47,12 +47,12 @@ def validate_optional_string(value, field_name: str) -> str | None:
 
 def validate_decimal_value(value, field_name: str) -> Decimal:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
 
     try:
         return Decimal(str(value))
     except (InvalidOperation, ValueError):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be a valid decimal")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser um decimal válido")
 
 
 def validate_optional_decimal(value, field_name: str) -> Decimal | None:
@@ -63,9 +63,9 @@ def validate_optional_decimal(value, field_name: str) -> Decimal | None:
 
 def validate_required_date(value, field_name: str) -> date:
     if value is None:
-        raise HTTPException(status_code=400, detail=f"{field_name} cannot be null")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, date):
-        raise HTTPException(status_code=400, detail=f"{field_name} must be a valid date")
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser uma data válida")
     return value
 
 
@@ -78,26 +78,26 @@ def validate_optional_date(value, field_name: str) -> date | None:
 def validate_user_exists(db: Session, user_id: int) -> User:
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
     return user
 
 
 def validate_category_exists(db: Session, category_id: int) -> Category:
     category = db.query(Category).filter(Category.id == category_id).first()
     if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
+        raise HTTPException(status_code=404, detail="Categoria não encontrada")
     return category
 
 
 def validate_category_ownership(user_id: int, category: Category) -> None:
     if category.user_id != user_id:
-        raise HTTPException(status_code=400, detail="Category does not belong to the informed user")
+        raise HTTPException(status_code=400, detail="Categoria não pertence ao usuário informado")
 
 
 def get_schedule_or_404(db: Session, schedule_id: int) -> Schedule:
     schedule = db.query(Schedule).filter(Schedule.id == schedule_id).first()
     if schedule is None:
-        raise HTTPException(status_code=404, detail="Schedule not found")
+        raise HTTPException(status_code=404, detail="Compromisso não encontrado")
     return schedule
 
 
@@ -210,5 +210,5 @@ def delete_schedule_service(db: Session, schedule_id: int) -> None:
         db.rollback()
         raise HTTPException(
             status_code=409,
-            detail="Schedule cannot be deleted because it is linked to other records",
+            detail="Compromisso não pode ser excluído porque está vinculado a outros registros",
         )
