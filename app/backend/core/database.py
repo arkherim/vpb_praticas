@@ -16,14 +16,6 @@ def get_database_url() -> str:
     if database_url:
         return database_url
 
-    database_path = os.environ.get("DATABASE_PATH")
-    if database_path:
-        sqlite_path = Path(database_path)
-        if not sqlite_path.is_absolute():
-            sqlite_path = Path(__file__).resolve().parent / sqlite_path
-        sqlite_path.parent.mkdir(parents=True, exist_ok=True)
-        return f"sqlite:///{sqlite_path.as_posix()}"
-
     pg_host = os.environ.get("PGHOST")
     pg_db = os.environ.get("PGDATABASE")
     pg_user = os.environ.get("PGUSER")
@@ -37,7 +29,7 @@ def get_database_url() -> str:
         )
 
     raise RuntimeError(
-        "DATABASE_URL, DATABASE_PATH, or PostgreSQL PG* environment variables are required."
+        "DATABASE_URL environment variable is required. This application does not support SQLite."
     )
 
 
