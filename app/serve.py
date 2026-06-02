@@ -28,7 +28,13 @@ def normalize_requirement_name(requirement_line: str) -> str | None:
 def validate_installed_requirements() -> None:
     missing_packages = []
 
-    for line in REQUIREMENTS_FILE.read_text(encoding="utf-8").splitlines():
+    try:
+        lines = REQUIREMENTS_FILE.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError:
+        print(f"Arquivo de requirements não encontrado em: {REQUIREMENTS_FILE}. Pulando verificação.")
+        return
+
+    for line in lines:
         package_name = normalize_requirement_name(line)
         if package_name is None:
             continue
@@ -155,7 +161,8 @@ def check_database_before_start() -> None:
 
 
 if __name__ == "__main__":
-    validate_installed_requirements()
+    if os.getenv("APP_ENV", "local").strip().lower() not in {"production", "render", "deploy"}:
+        validate_installed_requirements()
 
     import uvicorn
 
