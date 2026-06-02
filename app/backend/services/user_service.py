@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from backend.src.models.account import Account
-from backend.src.models.user import User
+from app.backend.models.account import Account
+from app.backend.models.user import User
 
 
 def create_user_service(db: Session, name: str, email: str) -> User:

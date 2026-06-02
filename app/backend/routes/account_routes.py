@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-from backend.src.core.dependencies import get_db
-from backend.src.schemas.account_schema import AccountCreate, AccountResponse
-from backend.src.services.account_service import (
+from app.backend.core.dependencies import get_db
+from app.backend.schemas.account_schema import AccountCreate, AccountResponse
+from app.backend.services.account_service import (
     create_account_service,
     delete_account_service,
     list_accounts_service,

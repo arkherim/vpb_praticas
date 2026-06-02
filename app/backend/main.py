@@ -2,12 +2,12 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from starlette.responses import JSONResponse
 
-from backend.src import models  # noqa: F401
-from backend.src.routes.user_routes import router as user_router
-from backend.src.routes.account_routes import router as account_router
-from backend.src.routes.schedule_routes import router as schedule_router
+from app.backend import models  # noqa: F401
+from app.backend.routes.user_routes import router as user_router
+from app.backend.routes.account_routes import router as account_router
+from app.backend.routes.schedule_routes import router as schedule_router
 
 logger = logging.getLogger(__name__)
 

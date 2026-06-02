@@ -4,8 +4,8 @@ from decimal import Decimal, InvalidOperation
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from backend.src.models.account import Account
-from backend.src.models.user import User
+from app.backend.models.account import Account
+from app.backend.models.user import User
 
 
 def validate_required_string(value, field_name: str) -> str:

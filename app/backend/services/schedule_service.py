@@ -5,9 +5,9 @@ from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from backend.src.models.category import Category
-from backend.src.models.schedule import Schedule
-from backend.src.models.user import User
+from app.backend.models.category import Category
+from app.backend.models.schedule import Schedule
+from app.backend.models.user import User
 
 
 def validate_required_integer(value, field_name: str) -> int:

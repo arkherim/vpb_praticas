@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import relationship
 
-from backend.src.core.database import Base
-from backend.src.models.mixins import TimestampMixin
+from app.backend.core.database import Base
+from app.backend.models.mixins import TimestampMixin
 
 
 class Transaction(TimestampMixin, Base):

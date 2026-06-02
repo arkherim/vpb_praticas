@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-from backend.src.core.dependencies import get_db
-from backend.src.schemas.schedule_schema import (
+from app.backend.core.dependencies import get_db
+from app.backend.schemas.schedule_schema import (
     ScheduleCreate,
     ScheduleResponse,
     ScheduleUpdate,
 )
-from backend.src.services.schedule_service import (
+from app.backend.services.schedule_service import (
     create_schedule_service,
     delete_schedule_service,
     get_schedule_by_id_service,
