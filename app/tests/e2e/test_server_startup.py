@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 APP_DIR = Path(__file__).resolve().parents[2]
-RUN_FILE = APP_DIR / "run.py"
+RUN_FILE = APP_DIR / "serve.py"
 PYTHON_BIN = APP_DIR / "venv" / "Scripts" / "python.exe"
 TMP_DIR = APP_DIR / "tests" / "tmp"
 ACCOUNTS_URL = "http://127.0.0.1:{port}/accounts"

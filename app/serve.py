@@ -54,6 +54,13 @@ def should_run_startup_tests() -> bool:
     if run_tests_env is not None:
         return run_tests_env.strip().lower() in {"1", "true", "yes", "y", "s", "sim"}
 
+    app_env = os.getenv("APP_ENV", "local").strip().lower()
+    if app_env in {"production", "render", "deploy"}:
+        return False
+
+    if not sys.stdin.isatty():
+        return False
+
     print("Selecione como deseja iniciar:")
     print("1. Subir o servidor sem testes")
     print("2. Rodar testes de startup e depois subir o servidor")
@@ -126,8 +133,18 @@ def check_database_before_start() -> None:
     try:
         with SessionLocal() as session:
             session.execute(text("SELECT 1"))
-        Base.metadata.create_all(bind=engine)
-        ensure_soft_delete_columns(engine, text)
+
+        auto_create_schema = os.getenv("AUTO_CREATE_SCHEMA", "true").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "y",
+            "sim",
+        }
+        if auto_create_schema:
+            Base.metadata.create_all(bind=engine)
+            ensure_soft_delete_columns(engine, text)
+
         print("Banco de dados verificado com sucesso.")
     except OperationalError as exc:
         print(f"Falha na conexao com o banco de dados. Servidor nao iniciado. Detalhe: {exc}")
