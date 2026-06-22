@@ -101,6 +101,27 @@ def get_schedule_or_404(db: Session, schedule_id: int) -> Schedule:
     return schedule
 
 
+def mark_overdue_schedules(db: Session) -> None:
+    overdue_schedules = db.query(Schedule).filter(
+        Schedule.due_date < date.today(),
+        Schedule.status != "pago",
+        Schedule.status != "vencido",
+    ).all()
+
+    if not overdue_schedules:
+        return
+
+    for schedule in overdue_schedules:
+        schedule.status = "vencido"
+
+    db.commit()
+
+
+def apply_overdue_status(schedule: Schedule) -> None:
+    if schedule.due_date < date.today() and schedule.status != "pago":
+        schedule.status = "vencido"
+
+
 def create_schedule_service(
     db: Session,
     user_id,
@@ -133,12 +154,14 @@ def create_schedule_service(
         status=validated_status,
     )
     db.add(schedule)
+    apply_overdue_status(schedule)
     db.commit()
     db.refresh(schedule)
     return schedule
 
 
 def list_schedules_service(db: Session, user_id: int | None = None) -> list[Schedule]:
+    mark_overdue_schedules(db)
     validated_user_id = validate_optional_integer(user_id, "user_id")
     query = db.query(Schedule)
 
@@ -150,6 +173,7 @@ def list_schedules_service(db: Session, user_id: int | None = None) -> list[Sche
 
 
 def get_schedule_by_id_service(db: Session, schedule_id: int) -> Schedule:
+    mark_overdue_schedules(db)
     validated_schedule_id = validate_required_integer(schedule_id, "schedule_id")
     return get_schedule_or_404(db, validated_schedule_id)
 
@@ -194,6 +218,7 @@ def update_schedule_service(
     if validated_status is not None:
         schedule.status = validated_status
 
+    apply_overdue_status(schedule)
     db.commit()
     db.refresh(schedule)
     return schedule

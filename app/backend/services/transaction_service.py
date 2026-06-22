@@ -67,12 +67,24 @@ def validate_decimal_value(value, field_name: str) -> Decimal:
     return decimal_value
 
 
+def validate_optional_decimal(value, field_name: str) -> Decimal | None:
+    if value is None:
+        return None
+    return validate_decimal_value(value, field_name)
+
+
 def validate_required_date(value, field_name: str) -> date:
     if value is None:
         raise HTTPException(status_code=400, detail=f"O campo {field_name} não pode ser nulo")
     if not isinstance(value, date):
         raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser uma data válida")
     return value
+
+
+def validate_optional_date(value, field_name: str) -> date | None:
+    if value is None:
+        return None
+    return validate_required_date(value, field_name)
 
 
 def validate_account_exists(db: Session, account_id: int) -> Account:
@@ -102,6 +114,27 @@ def validate_schedule_exists(db: Session, schedule_id: int | None) -> Schedule |
     if schedule is None:
         raise HTTPException(status_code=404, detail="Agendamento não encontrado")
     return schedule
+
+
+def get_transaction_or_404(db: Session, transaction_id: int) -> Transaction:
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+    if transaction is None:
+        raise HTTPException(status_code=404, detail="Transação não encontrada")
+    return transaction
+
+
+def apply_transaction_to_balance(account: Account, transaction_type: str, amount: Decimal) -> None:
+    if transaction_type == "receita":
+        account.balance += amount
+    else:
+        account.balance -= amount
+
+
+def revert_transaction_from_balance(account: Account, transaction_type: str, amount: Decimal) -> None:
+    if transaction_type == "receita":
+        account.balance -= amount
+    else:
+        account.balance += amount
 
 
 def create_transaction_service(
@@ -140,12 +173,97 @@ def create_transaction_service(
         status=validated_status,
     )
 
-    if validated_type == "receita":
-        account.balance += validated_amount
-    else:
-        account.balance -= validated_amount
+    apply_transaction_to_balance(account, validated_type, validated_amount)
 
     db.add(transaction)
     db.commit()
     db.refresh(transaction)
     return transaction
+
+
+def list_transactions_service(db: Session, account_id: int | None = None) -> list[Transaction]:
+    validated_account_id = validate_optional_integer(account_id, "account_id")
+    query = db.query(Transaction)
+
+    if validated_account_id is not None:
+        validate_account_exists(db, validated_account_id)
+        query = query.filter(Transaction.account_id == validated_account_id)
+
+    return query.all()
+
+
+def get_transaction_by_id_service(db: Session, transaction_id: int) -> Transaction:
+    validated_transaction_id = validate_required_integer(transaction_id, "transaction_id")
+    return get_transaction_or_404(db, validated_transaction_id)
+
+
+def update_transaction_service(
+    db: Session,
+    transaction_id,
+    account_id=None,
+    category_id=None,
+    schedule_id=None,
+    type=None,
+    amount=None,
+    transaction_date=None,
+    description=None,
+    status=None,
+) -> Transaction:
+    validated_transaction_id = validate_required_integer(transaction_id, "transaction_id")
+    transaction = get_transaction_or_404(db, validated_transaction_id)
+    current_account = validate_account_exists(db, transaction.account_id)
+
+    validated_account_id = validate_optional_integer(account_id, "account_id")
+    validated_category_id = validate_optional_integer(category_id, "category_id")
+    validated_schedule_id = validate_optional_integer(schedule_id, "schedule_id")
+    validated_type = validate_transaction_type(type) if type is not None else None
+    validated_amount = validate_optional_decimal(amount, "amount")
+    validated_date = validate_optional_date(transaction_date, "date")
+    validated_description = validate_optional_string(description, "description") if description is not None else None
+    validated_status = validate_optional_string(status, "status")
+
+    target_account = current_account
+    if validated_account_id is not None and validated_account_id != transaction.account_id:
+        target_account = validate_account_exists(db, validated_account_id)
+
+    target_category_id = validated_category_id if validated_category_id is not None else transaction.category_id
+    target_category = validate_category_exists(db, target_category_id)
+    validate_category_ownership(target_account, target_category)
+    validate_schedule_exists(db, validated_schedule_id)
+
+    new_type = validated_type if validated_type is not None else transaction.type
+    new_amount = validated_amount if validated_amount is not None else transaction.amount
+
+    revert_transaction_from_balance(current_account, transaction.type, transaction.amount)
+    apply_transaction_to_balance(target_account, new_type, new_amount)
+
+    transaction.account_id = target_account.id
+    transaction.category_id = target_category_id
+    transaction.type = new_type
+    transaction.amount = new_amount
+
+    if schedule_id is not None:
+        transaction.schedule_id = validated_schedule_id
+
+    if validated_date is not None:
+        transaction.date = validated_date
+
+    if description is not None:
+        transaction.description = validated_description
+
+    if validated_status is not None:
+        transaction.status = validated_status
+
+    db.commit()
+    db.refresh(transaction)
+    return transaction
+
+
+def delete_transaction_service(db: Session, transaction_id: int) -> None:
+    validated_transaction_id = validate_required_integer(transaction_id, "transaction_id")
+    transaction = get_transaction_or_404(db, validated_transaction_id)
+    account = validate_account_exists(db, transaction.account_id)
+
+    revert_transaction_from_balance(account, transaction.type, transaction.amount)
+    db.delete(transaction)
+    db.commit()
