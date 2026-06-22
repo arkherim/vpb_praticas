@@ -9,6 +9,7 @@ from app.backend import models  # noqa: F401
 from app.backend.routes.user_routes import router as user_router
 from app.backend.routes.account_routes import router as account_router
 from app.backend.routes.schedule_routes import router as schedule_router
+from app.backend.routes.transaction_routes import router as transaction_router
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ openapi_tags = [
     {"name": "users", "description": "Operacoes relacionadas a usuarios e autenticacao."},
     {"name": "accounts", "description": "Operacoes de CRUD e consulta de contas financeiras."},
     {"name": "schedules", "description": "Operacoes de CRUD de compromissos financeiros."},
+    {"name": "transactions", "description": "Operacoes de cadastro de movimentacoes financeiras."},
 ]
 
 app = FastAPI(openapi_tags=openapi_tags)
@@ -57,4 +59,5 @@ async def generic_exception_handler(request, exc: Exception):
 
 app.include_router(account_router)
 app.include_router(schedule_router)
+app.include_router(transaction_router)
 app.include_router(user_router)

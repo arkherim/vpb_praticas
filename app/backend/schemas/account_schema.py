@@ -38,3 +38,9 @@ class AccountResponse(AccountBase):
 
     class Config:
         from_attributes = True
+
+
+class AccountDashboardResponse(BaseModel):
+    total_balance: Decimal
+    monthly_income: Decimal
+    monthly_expenses: Decimal

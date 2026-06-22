@@ -1,10 +1,12 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from decimal import Decimal, InvalidOperation
 
 from fastapi import HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.backend.models.account import Account
+from app.backend.models.transaction import Transaction
 from app.backend.models.user import User
 
 
@@ -111,6 +113,36 @@ def get_account_by_id_service(db: Session, account_id: int):
     if account is None:
         raise HTTPException(status_code=404, detail="Conta não encontrada")
     return account
+
+
+def get_account_dashboard_service(db: Session, account_id: int):
+    account = get_account_by_id_service(db, account_id)
+    today = date.today()
+    month_start = today.replace(day=1)
+    if month_start.month == 12:
+        next_month = month_start.replace(year=month_start.year + 1, month=1)
+    else:
+        next_month = month_start.replace(month=month_start.month + 1)
+
+    monthly_income = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
+        Transaction.account_id == account_id,
+        Transaction.type == "receita",
+        Transaction.date >= month_start,
+        Transaction.date < next_month,
+    ).scalar()
+
+    monthly_expenses = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
+        Transaction.account_id == account_id,
+        Transaction.type == "despesa",
+        Transaction.date >= month_start,
+        Transaction.date < next_month,
+    ).scalar()
+
+    return {
+        "total_balance": account.balance or Decimal("0"),
+        "monthly_income": monthly_income or Decimal("0"),
+        "monthly_expenses": monthly_expenses or Decimal("0"),
+    }
 
 
 def delete_account_service(db: Session, account_id: int) -> None:

@@ -16,7 +16,7 @@ class TransactionBase(BaseModel):
 
 
 class TransactionCreate(TransactionBase):
-    pass
+    status: str | None = None
 
 
 class TransactionUpdate(BaseModel):
