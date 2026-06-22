@@ -3,6 +3,8 @@ from decimal import Decimal
 
 from pydantic import BaseModel
 
+Date = date
+
 
 class TransactionBase(BaseModel):
     account_id: int
@@ -10,7 +12,7 @@ class TransactionBase(BaseModel):
     schedule_id: int | None = None
     type: str
     amount: Decimal
-    date: date
+    date: Date
     description: str | None = None
     status: str
 
@@ -25,7 +27,7 @@ class TransactionUpdate(BaseModel):
     schedule_id: int | None = None
     type: str | None = None
     amount: Decimal | None = None
-    date: date | None = None
+    date: Date | None = None
     description: str | None = None
     status: str | None = None
 
