@@ -1,7 +1,5 @@
 import importlib.metadata
 import os
-import subprocess
-import sys
 from pathlib import Path
 
 
@@ -53,45 +51,6 @@ def validate_installed_requirements() -> None:
         raise SystemExit(1)
 
     print("Dependencias do requirements.txt verificadas com sucesso.")
-
-
-def should_run_startup_tests() -> bool:
-    run_tests_env = os.environ.get("RUN_STARTUP_TESTS")
-    if run_tests_env is not None:
-        return run_tests_env.strip().lower() in {"1", "true", "yes", "y", "s", "sim"}
-
-    app_env = os.environ.get("APP_ENV", "local").strip().lower()
-    if app_env in {"production", "render", "deploy"}:
-        return False
-
-    if not sys.stdin.isatty():
-        return False
-
-    print("Selecione como deseja iniciar:")
-    print("1. Subir o servidor sem testes")
-    print("2. Rodar testes de startup e depois subir o servidor")
-
-    while True:
-        try:
-            choice = input("Opcao [1/2]: ").strip()
-        except EOFError:
-            print("Entrada interativa indisponivel. O servidor sera iniciado sem rodar os testes.")
-            return False
-        if choice == "1":
-            return False
-        if choice == "2":
-            return True
-        print("Opcao invalida. Digite 1 ou 2.")
-
-
-def run_startup_tests() -> bool:
-    print("Executando testes de startup...")
-    result = subprocess.run(
-        [sys.executable, "-m", "unittest", "tests.e2e.test_server_startup", "-v"],
-        check=False,
-        cwd=str(APP_DIR),
-    )
-    return result.returncode == 0
 
 
 def ensure_soft_delete_columns(engine, text) -> None:
@@ -176,10 +135,6 @@ if __name__ == "__main__":
     import uvicorn
 
     port = int(os.environ.get("PORT", 8000))
-
-    if should_run_startup_tests() and not run_startup_tests():
-        print("Os testes falharam. O servidor nao sera iniciado.")
-        raise SystemExit(1)
 
     check_database_before_start()
     # Render requires binding to 0.0.0.0 and uses PORT from environment.
