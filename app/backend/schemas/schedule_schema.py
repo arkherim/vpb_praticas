@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class ScheduleBase(BaseModel):
     user_id: int
     category_id: int
+    account_id: int
     type: str
     amount: Decimal
     due_date: date
@@ -20,6 +21,7 @@ class ScheduleCreate(ScheduleBase):
 
 class ScheduleUpdate(BaseModel):
     category_id: int | None = None
+    account_id: int | None = None
     type: str | None = None
     amount: Decimal | None = None
     due_date: date | None = None

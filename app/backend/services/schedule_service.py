@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.backend.models.account import Account
 from app.backend.models.category import Category
 from app.backend.models.schedule import Schedule
 from app.backend.models.user import User
@@ -89,9 +90,21 @@ def validate_category_exists(db: Session, category_id: int) -> Category:
     return category
 
 
+def validate_account_exists(db: Session, account_id: int) -> Account:
+    account = db.query(Account).filter(Account.id == account_id, Account.deleted_at.is_(None)).first()
+    if account is None:
+        raise HTTPException(status_code=404, detail="Conta não encontrada")
+    return account
+
+
 def validate_category_ownership(user_id: int, category: Category) -> None:
     if category.user_id != user_id:
         raise HTTPException(status_code=400, detail="Categoria não pertence ao usuário informado")
+
+
+def validate_account_ownership(user_id: int, account: Account) -> None:
+    if account.user_id != user_id:
+        raise HTTPException(status_code=400, detail="Conta não pertence ao usuário informado")
 
 
 def get_schedule_or_404(db: Session, schedule_id: int) -> Schedule:
@@ -126,6 +139,7 @@ def create_schedule_service(
     db: Session,
     user_id,
     category_id,
+    account_id,
     type,
     amount,
     due_date,
@@ -134,6 +148,7 @@ def create_schedule_service(
 ):
     validated_user_id = validate_required_integer(user_id, "user_id")
     validated_category_id = validate_required_integer(category_id, "category_id")
+    validated_account_id = validate_required_integer(account_id, "account_id")
     validated_type = validate_required_string(type, "type")
     validated_amount = validate_decimal_value(amount, "amount")
     validated_due_date = validate_required_date(due_date, "due_date")
@@ -143,10 +158,13 @@ def create_schedule_service(
     validate_user_exists(db, validated_user_id)
     category = validate_category_exists(db, validated_category_id)
     validate_category_ownership(validated_user_id, category)
+    account = validate_account_exists(db, validated_account_id)
+    validate_account_ownership(validated_user_id, account)
 
     schedule = Schedule(
         user_id=validated_user_id,
         category_id=validated_category_id,
+        account_id=validated_account_id,
         type=validated_type,
         amount=validated_amount,
         due_date=validated_due_date,
@@ -182,6 +200,7 @@ def update_schedule_service(
     db: Session,
     schedule_id,
     category_id=None,
+    account_id=None,
     type=None,
     amount=None,
     due_date=None,
@@ -192,6 +211,7 @@ def update_schedule_service(
     schedule = get_schedule_or_404(db, validated_schedule_id)
 
     validated_category_id = validate_optional_integer(category_id, "category_id")
+    validated_account_id = validate_optional_integer(account_id, "account_id")
     validated_type = validate_optional_string(type, "type")
     validated_amount = validate_optional_decimal(amount, "amount")
     validated_due_date = validate_optional_date(due_date, "due_date")
@@ -202,6 +222,11 @@ def update_schedule_service(
         category = validate_category_exists(db, validated_category_id)
         validate_category_ownership(schedule.user_id, category)
         schedule.category_id = validated_category_id
+
+    if validated_account_id is not None:
+        account = validate_account_exists(db, validated_account_id)
+        validate_account_ownership(schedule.user_id, account)
+        schedule.account_id = validated_account_id
 
     if validated_type is not None:
         schedule.type = validated_type

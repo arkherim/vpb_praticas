@@ -11,6 +11,7 @@ class Schedule(TimestampMixin, Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column("id_usuario", Integer, ForeignKey("usuario.id", ondelete="CASCADE"), nullable=False, index=True)
     category_id = Column("id_categoria", Integer, ForeignKey("categoria.id", ondelete="RESTRICT"), nullable=False, index=True)
+    account_id = Column("id_conta", Integer, ForeignKey("conta.id", ondelete="RESTRICT"), nullable=False, index=True)
     type = Column("tipo", String(10), nullable=False)
     amount = Column("valor", Numeric(12, 2), nullable=False)
     due_date = Column("vencimento", Date, nullable=False)
@@ -19,4 +20,5 @@ class Schedule(TimestampMixin, Base):
 
     user = relationship("User", back_populates="schedules")
     category = relationship("Category", back_populates="schedules")
+    account = relationship("Account", back_populates="schedules")
     transactions = relationship("Transaction", back_populates="schedule")

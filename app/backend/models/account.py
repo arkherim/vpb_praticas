@@ -19,3 +19,4 @@ class Account(TimestampMixin, Base):
 
     user = relationship("User", back_populates="accounts")
     transactions = relationship("Transaction", back_populates="account")
+    schedules = relationship("Schedule", back_populates="account")
