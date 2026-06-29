@@ -14,12 +14,13 @@ Disciplina: Práticas Extensionistas III
 ## Documentação Consolidada
 - [Relatório Final (PDF)](./docs/misc/Victor%20e%20Bianca%20-%20Praticas%203.pdf)
 
-## Definição
+### Definição
 
 ### Stack de desenvolvimento:
 - Back-end: [Python](https://www.python.org/)
 - Front-End: [React](https://react.dev/)
 - SGDB: [PostgreSQL](https://www.postgresql.org/)
+- Containerização: [Docker](https://www.docker.com/)
 
 ### Documento de Requisitos de Software
 - [requisitos.md](./docs/REQUISITOS.md)  
@@ -70,3 +71,4 @@ Disciplina: Práticas Extensionistas III
     - [Cadastro de Compromisso](./docs/diagrama_atividades/da_cadastro_compromisso.png)
     - [Pagamento de Compromisso](./docs/diagrama_atividades/da_pagamento_compromisso.png)
     - [Relatório](./docs/diagrama_atividades/da_relatorio.png)
+
