@@ -16,7 +16,6 @@ import {
 import { getSession, clearSession, type LoginResponse } from "@/lib/users";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -35,7 +34,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    console.error("tanstack_root_error_component", error);
   }, [error]);
   return (
     <div className="grid min-h-screen place-items-center bg-triangles px-4 text-center">
