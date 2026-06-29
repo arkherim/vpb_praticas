@@ -53,15 +53,17 @@ def validate_installed_requirements() -> None:
     print("Dependencias do requirements.txt verificadas com sucesso.")
 
 
-def ensure_soft_delete_columns(engine, text) -> None:
+def ensure_schema_columns(engine, text) -> None:
     statements_by_dialect = {
         "postgresql": [
             'ALTER TABLE IF EXISTS usuario ADD COLUMN IF NOT EXISTS excluido_em TIMESTAMPTZ',
             'ALTER TABLE IF EXISTS conta ADD COLUMN IF NOT EXISTS excluido_em TIMESTAMPTZ',
+            'ALTER TABLE IF EXISTS agendamento ADD COLUMN IF NOT EXISTS id_conta INTEGER REFERENCES conta(id)',
         ],
         "sqlite": [
             'ALTER TABLE usuario ADD COLUMN excluido_em DATETIME',
             'ALTER TABLE conta ADD COLUMN excluido_em DATETIME',
+            'ALTER TABLE agendamento ADD COLUMN IF NOT EXISTS id_conta INTEGER',
         ],
     }
 
@@ -73,7 +75,11 @@ def ensure_soft_delete_columns(engine, text) -> None:
 
     with engine.begin() as connection:
         if dialect_name == "sqlite":
-            for table_name in ("usuario", "conta"):
+            for table_name, column_name, add_statement in (
+                ("usuario", "excluido_em", "ALTER TABLE usuario ADD COLUMN excluido_em DATETIME"),
+                ("conta", "excluido_em", "ALTER TABLE conta ADD COLUMN excluido_em DATETIME"),
+                ("agendamento", "id_conta", "ALTER TABLE agendamento ADD COLUMN id_conta INTEGER"),
+            ):
                 table_exists = connection.execute(
                     text(
                         "SELECT name FROM sqlite_master WHERE type='table' AND name=:table"
@@ -87,10 +93,8 @@ def ensure_soft_delete_columns(engine, text) -> None:
                     row[1]
                     for row in connection.execute(text(f"PRAGMA table_info({table_name})")).fetchall()
                 }
-                if "excluido_em" not in columns:
-                    connection.execute(
-                        text(f"ALTER TABLE {table_name} ADD COLUMN excluido_em DATETIME")
-                    )
+                if column_name not in columns:
+                    connection.execute(text(add_statement))
             return
 
         for statement in statements:
@@ -117,7 +121,7 @@ def check_database_before_start() -> None:
         }
         if auto_create_schema:
             Base.metadata.create_all(bind=engine)
-            ensure_soft_delete_columns(engine, text)
+            ensure_schema_columns(engine, text)
 
         print("Banco de dados verificado com sucesso.")
     except OperationalError as exc:
