@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.backend.models.category import Category
@@ -81,7 +82,13 @@ def list_categories_service(db: Session, user_id: int | None = None) -> list[Cat
     if user_id is not None:
         validated_user_id = validate_required_integer(user_id, "user_id")
         validate_user_exists(db, validated_user_id)
-        return db.query(Category).filter(Category.user_id == validated_user_id).all()
+        return db.query(Category).filter(
+            or_(
+                Category.user_id == validated_user_id,
+                Category.is_default.is_(True),
+                Category.user_id.is_(None),
+            )
+        ).all()
 
     return db.query(Category).all()
 
