@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.backend.models.account import Account
 from app.backend.models.category import Category
 from app.backend.models.schedule import Schedule
+from app.backend.models.transaction import Transaction
 from app.backend.models.user import User
 
 
@@ -60,6 +61,13 @@ def validate_optional_decimal(value, field_name: str) -> Decimal | None:
     if value is None:
         return None
     return validate_decimal_value(value, field_name)
+
+
+def validate_positive_decimal(value, field_name: str) -> Decimal:
+    decimal_value = validate_decimal_value(value, field_name)
+    if decimal_value <= 0:
+        raise HTTPException(status_code=400, detail=f"O campo {field_name} deve ser maior que zero")
+    return decimal_value
 
 
 def validate_required_date(value, field_name: str) -> date:
@@ -133,6 +141,63 @@ def mark_overdue_schedules(db: Session) -> None:
 def apply_overdue_status(schedule: Schedule) -> None:
     if schedule.due_date < date.today() and schedule.status != "pago":
         schedule.status = "vencido"
+
+
+def apply_schedule_payment_to_balance(account: Account, schedule_type: str, amount: Decimal) -> None:
+    if schedule_type == "receita":
+        account.balance += amount
+        return
+    if schedule_type == "despesa":
+        account.balance -= amount
+        return
+
+    raise HTTPException(status_code=400, detail="Tipo de agendamento inválido para pagamento")
+
+
+def pay_schedule_service(
+    db: Session,
+    schedule_id,
+    amount,
+    payment_date=None,
+) -> Schedule:
+    validated_schedule_id = validate_required_integer(schedule_id, "schedule_id")
+    validated_paid_amount = validate_positive_decimal(amount, "amount")
+    validated_payment_date = validate_optional_date(payment_date, "payment_date") or date.today()
+
+    schedule = get_schedule_or_404(db, validated_schedule_id)
+
+    if schedule.status == "pago" or schedule.amount <= 0:
+        raise HTTPException(status_code=400, detail="Agendamento já está quitado")
+
+    remaining_amount = Decimal(str(schedule.amount))
+    if validated_paid_amount > remaining_amount:
+        raise HTTPException(status_code=400, detail="Valor pago não pode ser maior que o valor restante")
+
+    account = validate_account_exists(db, schedule.account_id)
+    category = validate_category_exists(db, schedule.category_id)
+    validate_account_ownership(schedule.user_id, account)
+    validate_category_ownership(schedule.user_id, category)
+
+    transaction = Transaction(
+        account_id=schedule.account_id,
+        category_id=schedule.category_id,
+        schedule_id=schedule.id,
+        type=schedule.type,
+        amount=validated_paid_amount,
+        date=validated_payment_date,
+        description=schedule.description,
+        status="pago",
+    )
+
+    apply_schedule_payment_to_balance(account, schedule.type, validated_paid_amount)
+
+    schedule.amount = remaining_amount - validated_paid_amount
+    schedule.status = "pago" if schedule.amount == 0 else "pendente"
+
+    db.add(transaction)
+    db.commit()
+    db.refresh(schedule)
+    return schedule
 
 
 def create_schedule_service(

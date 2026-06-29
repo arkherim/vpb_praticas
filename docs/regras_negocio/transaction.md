@@ -25,7 +25,8 @@ Representa uma movimentacao financeira realizada.
 - Toda transacao deve estar vinculada a uma conta.
 - Toda transacao deve estar vinculada a uma categoria.
 - O vinculo com agendamento e opcional.
-- Regras detalhadas de tipo, status e filtros ainda serao refinadas antes da implementacao.
+- Transacoes podem ser criadas manualmente ou geradas automaticamente por pagamento de agendamento.
+- Quando gerada por pagamento de agendamento, a transacao deve ser vinculada por `id_agendamento`.
 
 ### Regras por operacao
 

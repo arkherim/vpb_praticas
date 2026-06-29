@@ -29,6 +29,11 @@ class ScheduleUpdate(BaseModel):
     status: str | None = None
 
 
+class SchedulePayment(BaseModel):
+    amount: Decimal
+    payment_date: date | None = None
+
+
 class ScheduleResponse(ScheduleBase):
     id: int
     created_at: datetime

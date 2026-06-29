@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.backend.core.dependencies import get_db
 from app.backend.schemas.schedule_schema import (
     ScheduleCreate,
+    SchedulePayment,
     ScheduleResponse,
     ScheduleUpdate,
 )
@@ -12,6 +13,7 @@ from app.backend.services.schedule_service import (
     delete_schedule_service,
     get_schedule_by_id_service,
     list_schedules_service,
+    pay_schedule_service,
     update_schedule_service,
 )
 
@@ -55,6 +57,16 @@ def update_schedule(schedule_id: int, schedule: ScheduleUpdate, db: Session = De
         schedule.due_date,
         schedule.description,
         schedule.status,
+    )
+
+
+@router.post("/schedules/{schedule_id}/payments", response_model=ScheduleResponse)
+def pay_schedule(schedule_id: int, payment: SchedulePayment, db: Session = Depends(get_db)):
+    return pay_schedule_service(
+        db,
+        schedule_id,
+        payment.amount,
+        payment.payment_date,
     )
 
 

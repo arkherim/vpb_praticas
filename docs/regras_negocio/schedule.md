@@ -24,7 +24,11 @@ Representa um compromisso financeiro futuro.
 - Todo agendamento pertence a um usuario.
 - Todo agendamento pertence a uma categoria.
 - Um agendamento pode ou nao gerar uma transacao associada.
-- Regras detalhadas de confirmacao, listagem de pendentes e proximos vencimentos ainda serao refinadas antes da implementacao.
+- O pagamento de agendamento pode ser parcial e cada pagamento gera uma transacao vinculada.
+- Em pagamento parcial, o campo `valor` do agendamento passa a representar o saldo restante.
+- Pagamento acima do saldo restante nao e permitido.
+- Ao quitar o saldo restante, o status do agendamento muda automaticamente para `pago`.
+- Enquanto houver saldo restante, o status permanece `pendente`.
 
 ### Regras por operacao
 
@@ -32,4 +36,4 @@ Representa um compromisso financeiro futuro.
 - `GET /schedules`: pendente
 - `PATCH /schedules/{id}`: pendente
 - `DELETE /schedules/{id}`: pendente
-- `POST /schedules/{id}/confirm`: pendente
+- `POST /schedules/{id}/payments`: registrar pagamento parcial/total com criacao de transacao vinculada
