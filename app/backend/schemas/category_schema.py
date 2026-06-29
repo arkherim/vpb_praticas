@@ -4,14 +4,13 @@ from pydantic import BaseModel
 
 
 class CategoryBase(BaseModel):
-    user_id: int
     name: str
     description: str | None = None
     is_default: bool = False
 
 
 class CategoryCreate(CategoryBase):
-    pass
+    user_id: int
 
 
 class CategoryUpdate(BaseModel):
@@ -21,6 +20,7 @@ class CategoryUpdate(BaseModel):
 
 
 class CategoryResponse(CategoryBase):
+    user_id: int | None = None
     id: int
     created_at: datetime
     updated_at: datetime
