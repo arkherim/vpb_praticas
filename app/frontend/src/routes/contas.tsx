@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Trash2, Plus, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/users";
+import { getSession } from "@/lib/users.ts";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

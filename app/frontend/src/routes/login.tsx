@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import {
   login, saveSession, loginSchema, type LoginInput,
-} from "@/lib/users";
+} from "@/lib/users.ts";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Entrar — VPB" }] }),

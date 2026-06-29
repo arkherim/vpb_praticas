@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { apiFetch } from "@/lib/api";
-import { updatePassword, type User } from "@/lib/users";
+import { updatePassword, type User } from "@/lib/users.ts";
 import { Field } from "./login";
 
 export const Route = createFileRoute("/recuperar-senha")({

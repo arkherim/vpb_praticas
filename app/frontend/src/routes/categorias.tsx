@@ -25,7 +25,7 @@ import {
   categoriesQueryOptions, createCategory, updateCategory, deleteCategory,
   type Category,
 } from "@/lib/categories";
-import { getSession } from "@/lib/users";
+import { getSession } from "@/lib/users.ts";
 
 export const Route = createFileRoute("/categorias")({
   head: () => ({ meta: [{ title: "Categorias — VPB" }] }),

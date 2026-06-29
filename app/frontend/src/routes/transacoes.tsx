@@ -36,7 +36,7 @@ import {
   categoriesQueryOptions, type Category,
 } from "@/lib/categories";
 import { formatBRL } from "@/lib/mockDashboard";
-import { getSession } from "@/lib/users";
+import { getSession } from "@/lib/users.ts";
 
 export const Route = createFileRoute("/transacoes")({
   head: () => ({ meta: [{ title: "Transações — VPB" }] }),

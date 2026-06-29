@@ -10,7 +10,7 @@ import {
 import { transactionsQueryOptions, type Transaction } from "@/lib/transactions";
 import { schedulesQueryOptions, paySchedule, type Schedule } from "@/lib/schedules";
 import { categoriesQueryOptions, type Category } from "@/lib/categories";
-import { getSession } from "@/lib/users";
+import { getSession } from "@/lib/users.ts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

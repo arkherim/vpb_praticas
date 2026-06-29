@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/sonner";
 import {
   LogOut, UserCircle, LayoutDashboard, ArrowLeftRight, CalendarClock, Wallet, Tags, Menu, X,
 } from "lucide-react";
-import { getSession, clearSession, type LoginResponse } from "@/lib/users";
+import { getSession, clearSession, type LoginResponse } from "@/lib/users.ts";
 
 import appCss from "../styles.css?url";
 
