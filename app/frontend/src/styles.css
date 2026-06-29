@@ -1,0 +1,137 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-lavender: var(--lavender);
+  --color-lavender-foreground: var(--lavender-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-violet: var(--violet);
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bowlby One", "Lilita One", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.13 0.015 285);
+  --foreground: oklch(0.98 0.005 280);
+  --card: oklch(0.18 0.025 285);
+  --card-foreground: oklch(0.98 0.005 280);
+  --popover: oklch(0.18 0.025 285);
+  --popover-foreground: oklch(0.98 0.005 280);
+  --primary: oklch(0.52 0.27 320);
+  --primary-foreground: oklch(0.99 0.005 280);
+  --secondary: oklch(0.24 0.04 285);
+  --secondary-foreground: oklch(0.98 0.005 280);
+  --muted: oklch(0.22 0.03 285);
+  --muted-foreground: oklch(0.72 0.02 285);
+  --accent: oklch(0.7 0.2 295);
+  --accent-foreground: oklch(0.13 0.015 285);
+  --destructive: oklch(0.65 0.25 25);
+  --destructive-foreground: oklch(0.99 0.005 280);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.7 0.2 295);
+
+  --lavender: oklch(0.78 0.1 305);
+  --lavender-foreground: oklch(0.15 0.02 280);
+  --success: oklch(0.85 0.25 140);
+  --success-foreground: oklch(0.13 0.015 285);
+  --violet: oklch(0.55 0.24 290);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+/* Padrão de triângulos roxos sobre preto */
+@utility bg-triangles {
+  background-color: var(--color-background);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='40' viewBox='0 0 44 40'><polygon points='11,6 17,16 5,16' fill='%237c3aed' fill-opacity='0.22'/><polygon points='33,24 39,34 27,34' fill='%237c3aed' fill-opacity='0.22'/></svg>");
+  background-size: 44px 40px;
+}
+
+@utility bg-triangles-soft {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='24' viewBox='0 0 26 24'><polygon points='7,4 12,12 2,12' fill='%23a855f7' fill-opacity='0.35'/></svg>");
+  background-size: 26px 24px;
+}
+
+/* Moldura de losangos roxos nos cantos (auth) */
+@utility bg-diamond-frame {
+  background-color: #0a0a0f;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'><g><rect x='30' y='30' width='70' height='70' transform='rotate(45 65 65)' fill='%237c3aed' fill-opacity='0.7'/><rect x='110' y='110' width='90' height='90' transform='rotate(45 155 155)' fill='%23a855f7' fill-opacity='0.6'/></g></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'><g><rect x='30' y='30' width='70' height='70' transform='rotate(45 65 65)' fill='%23a855f7' fill-opacity='0.6'/><rect x='110' y='110' width='90' height='90' transform='rotate(45 155 155)' fill='%237c3aed' fill-opacity='0.7'/></g></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'><g><rect x='30' y='30' width='70' height='70' transform='rotate(45 65 65)' fill='%23a855f7' fill-opacity='0.6'/><rect x='110' y='110' width='90' height='90' transform='rotate(45 155 155)' fill='%237c3aed' fill-opacity='0.7'/></g></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'><g><rect x='30' y='30' width='70' height='70' transform='rotate(45 65 65)' fill='%237c3aed' fill-opacity='0.7'/><rect x='110' y='110' width='90' height='90' transform='rotate(45 155 155)' fill='%23a855f7' fill-opacity='0.6'/></g></svg>");
+  background-position: top left, top right, bottom left, bottom right;
+  background-repeat: no-repeat;
+  background-size: 320px 320px;
+}
+
+@utility btn-chunky {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  box-shadow: 0 6px 0 oklch(0.32 0.2 320), 0 12px 24px oklch(0.52 0.27 320 / 0.4);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+@utility input-chunky {
+  background: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 0.25rem;
+  padding: 0.75rem 0.9rem;
+  width: 100%;
+  font-size: 1rem;
+  outline: none;
+}
+@utility input-chunky-focus {
+  box-shadow: 0 0 0 3px oklch(0.55 0.27 320 / 0.4);
+}
+@utility label-chunky {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: black;
+}
+
+.font-display { font-family: var(--font-display); }
