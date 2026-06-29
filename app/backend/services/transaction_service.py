@@ -102,6 +102,8 @@ def validate_category_exists(db: Session, category_id: int) -> Category:
 
 
 def validate_category_ownership(account: Account, category: Category) -> None:
+    if category.user_id is None:
+        return
     if category.user_id != account.user_id:
         raise HTTPException(status_code=400, detail="Categoria não pertence ao usuário da conta")
 
@@ -135,6 +137,20 @@ def revert_transaction_from_balance(account: Account, transaction_type: str, amo
         account.balance -= amount
     else:
         account.balance += amount
+
+
+def restore_schedule_remaining_amount(schedule: Schedule, amount: Decimal) -> None:
+    schedule.amount = Decimal(str(schedule.amount)) + amount
+    schedule.status = "pendente"
+
+
+def apply_transaction_to_schedule(schedule: Schedule, amount: Decimal) -> None:
+    remaining_amount = Decimal(str(schedule.amount))
+    if amount > remaining_amount:
+        raise HTTPException(status_code=400, detail="Valor da transação não pode ser maior que o valor restante do agendamento")
+
+    schedule.amount = remaining_amount - amount
+    schedule.status = "pago" if schedule.amount == 0 else "pendente"
 
 
 def create_transaction_service(
@@ -212,6 +228,7 @@ def update_transaction_service(
     validated_transaction_id = validate_required_integer(transaction_id, "transaction_id")
     transaction = get_transaction_or_404(db, validated_transaction_id)
     current_account = validate_account_exists(db, transaction.account_id)
+    current_schedule = validate_schedule_exists(db, transaction.schedule_id)
 
     validated_account_id = validate_optional_integer(account_id, "account_id")
     validated_category_id = validate_optional_integer(category_id, "category_id")
@@ -229,10 +246,16 @@ def update_transaction_service(
     target_category_id = validated_category_id if validated_category_id is not None else transaction.category_id
     target_category = validate_category_exists(db, target_category_id)
     validate_category_ownership(target_account, target_category)
-    validate_schedule_exists(db, validated_schedule_id)
+    target_schedule = validate_schedule_exists(db, validated_schedule_id) if schedule_id is not None else current_schedule
 
     new_type = validated_type if validated_type is not None else transaction.type
     new_amount = validated_amount if validated_amount is not None else transaction.amount
+
+    if current_schedule is not None:
+        restore_schedule_remaining_amount(current_schedule, Decimal(str(transaction.amount)))
+
+    if target_schedule is not None:
+        apply_transaction_to_schedule(target_schedule, new_amount)
 
     revert_transaction_from_balance(current_account, transaction.type, transaction.amount)
     apply_transaction_to_balance(target_account, new_type, new_amount)
@@ -263,7 +286,10 @@ def delete_transaction_service(db: Session, transaction_id: int) -> None:
     validated_transaction_id = validate_required_integer(transaction_id, "transaction_id")
     transaction = get_transaction_or_404(db, validated_transaction_id)
     account = validate_account_exists(db, transaction.account_id)
+    schedule = validate_schedule_exists(db, transaction.schedule_id)
 
     revert_transaction_from_balance(account, transaction.type, transaction.amount)
+    if schedule is not None:
+        restore_schedule_remaining_amount(schedule, Decimal(str(transaction.amount)))
     db.delete(transaction)
     db.commit()

@@ -106,6 +106,8 @@ def validate_account_exists(db: Session, account_id: int) -> Account:
 
 
 def validate_category_ownership(user_id: int, category: Category) -> None:
+    if category.user_id is None:
+        return
     if category.user_id != user_id:
         raise HTTPException(status_code=400, detail="Categoria não pertence ao usuário informado")
 
