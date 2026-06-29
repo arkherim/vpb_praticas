@@ -20,7 +20,12 @@ Disciplina: Práticas Extensionistas III
 - Back-end: [Python](https://www.python.org/)
 - Front-End: [React](https://react.dev/)
 - SGDB: [PostgreSQL](https://www.postgresql.org/)
-- Containerização: [Docker](https://www.docker.com/)
+
+### LLMs e Agentes:
+- Copilot (Sonnet 4.6)
+- Claude (Sonnet 4.6)
+- Codex (GPT 5.5)
+- Lovable (Sonnet 4.6)
 
 ### Documento de Requisitos de Software
 - [requisitos.md](./docs/REQUISITOS.md)  
