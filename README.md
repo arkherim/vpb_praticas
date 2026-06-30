@@ -14,6 +14,19 @@ Disciplina: Práticas Extensionistas III
 ## Documentação Consolidada
 - [Relatório Final (PDF)](./docs/misc/Victor%20e%20Bianca%20-%20Praticas%203.pdf)
 
+## Infraestrutura e Deploy
+
+O sistema está hospedado em nuvem e pode ser acessado em: **[vpb-praticas.vercel.app](https://vpb-praticas.vercel.app/)**
+
+Serviços utilizados:
+
+- **Front-end:** [Vercel](https://vercel.com/) — hospedagem do app React
+- **Back-end:** [Render](https://render.com/) — hospedagem da API FastAPI (Python)
+- **Banco de Dados:** [NeonDB](https://neon.tech/) — PostgreSQL gerenciado em nuvem
+
+**Observação:** O serviço de back-end utiliza o plano gratuito do Render, que hiberna automaticamente após um período de inatividade. Na primeira requisição após a hibernação, a API pode levar até 1 minuto para responder enquanto o serviço é reiniciado. Requisições subsequentes funcionam normalmente.
+
+
 ### Definição
 
 ### Stack de desenvolvimento:
@@ -71,4 +84,3 @@ Disciplina: Práticas Extensionistas III
     - [Cadastro de Compromisso](./docs/diagrama_atividades/da_cadastro_compromisso.png)
     - [Pagamento de Compromisso](./docs/diagrama_atividades/da_pagamento_compromisso.png)
     - [Relatório](./docs/diagrama_atividades/da_relatorio.png)
-
