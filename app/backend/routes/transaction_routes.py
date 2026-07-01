@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
@@ -30,8 +32,14 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
 
 
 @router.get("/transactions", response_model=list[TransactionResponse])
-def list_transactions(account_id: int = Query(None), db: Session = Depends(get_db)):
-    return list_transactions_service(db, account_id)
+def list_transactions(
+    account_id: int = Query(None),
+    category_id: int = Query(None),
+    transaction_date: date | None = Query(None, alias="date"),
+    description: str | None = Query(None),
+    db: Session = Depends(get_db),
+):
+    return list_transactions_service(db, account_id, category_id, transaction_date, description)
 
 
 @router.get("/transactions/{transaction_id}", response_model=TransactionResponse)

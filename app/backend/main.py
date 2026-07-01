@@ -12,6 +12,7 @@ from app.backend.routes.category_routes import router as category_router
 from app.backend.routes.dashboard_routes import router as dashboard_router
 from app.backend.routes.schedule_routes import router as schedule_router
 from app.backend.routes.transaction_routes import router as transaction_router
+from app.backend.routes.contact_routes import router as contact_router
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ openapi_tags = [
     {"name": "dashboard", "description": "Operacoes de resumo financeiro consolidado."},
     {"name": "schedules", "description": "Operacoes de CRUD de compromissos financeiros."},
     {"name": "transactions", "description": "Operacoes de CRUD de movimentacoes financeiras."},
+    {"name": "contact", "description": "Operacao de envio de mensagem da pagina de contato."},
 ]
 
 app = FastAPI(openapi_tags=openapi_tags)
@@ -67,3 +69,4 @@ app.include_router(dashboard_router)
 app.include_router(schedule_router)
 app.include_router(transaction_router)
 app.include_router(user_router)
+app.include_router(contact_router)

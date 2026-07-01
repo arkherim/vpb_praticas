@@ -197,13 +197,33 @@ def create_transaction_service(
     return transaction
 
 
-def list_transactions_service(db: Session, account_id: int | None = None) -> list[Transaction]:
+def list_transactions_service(
+    db: Session,
+    account_id: int | None = None,
+    category_id: int | None = None,
+    transaction_date: date | None = None,
+    description: str | None = None,
+) -> list[Transaction]:
     validated_account_id = validate_optional_integer(account_id, "account_id")
+    validated_category_id = validate_optional_integer(category_id, "category_id")
+    validated_date = validate_optional_date(transaction_date, "date")
+    validated_description = validate_optional_string(description, "description")
+
     query = db.query(Transaction)
 
     if validated_account_id is not None:
         validate_account_exists(db, validated_account_id)
         query = query.filter(Transaction.account_id == validated_account_id)
+
+    if validated_category_id is not None:
+        validate_category_exists(db, validated_category_id)
+        query = query.filter(Transaction.category_id == validated_category_id)
+
+    if validated_date is not None:
+        query = query.filter(Transaction.date == validated_date)
+
+    if validated_description is not None:
+        query = query.filter(Transaction.description.ilike(f"%{validated_description}%"))
 
     return query.all()
 
