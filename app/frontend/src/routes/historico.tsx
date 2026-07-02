@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { transactionsQueryOptions } from "@/lib/transactions";
 import { accountsQueryOptions } from "@/lib/accounts";
-import { getSession } from "@/lib/users.ts";
+import { getSession } from "@/lib/users";
 import { TransactionRow } from "./index";
 
 export const Route = createFileRoute("/historico")({

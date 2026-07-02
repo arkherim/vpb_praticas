@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import {
   createUser, login, saveSession, userSchema, type UserInput,
-} from "@/lib/users.ts";
+} from "@/lib/users";
 import { Field } from "./login";
 
 export const Route = createFileRoute("/cadastro")({

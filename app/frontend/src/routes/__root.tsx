@@ -11,11 +11,12 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import {
-  LogOut, UserCircle, LayoutDashboard, ArrowLeftRight, CalendarClock, Wallet, Tags, Menu, X,
+  LogOut, UserCircle, LayoutDashboard, ArrowLeftRight, CalendarClock, Wallet, Tags, Menu, X, Mail,
 } from "lucide-react";
-import { getSession, clearSession, type LoginResponse } from "@/lib/users.ts";
+import { getSession, clearSession, type LoginResponse } from "@/lib/users";
 
 import appCss from "../styles.css?url";
+import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -34,7 +35,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
-    console.error("tanstack_root_error_component", error);
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
   return (
     <div className="grid min-h-screen place-items-center bg-triangles px-4 text-center">
@@ -281,6 +282,17 @@ function Sidebar({
 
       {/* Footer */}
       <div className="space-y-2 border-t border-white/5 pt-4 text-sm">
+        <Link
+          to="/contato"
+          className={`flex items-center gap-2 rounded-full px-3 py-2 ${
+            pathname === "/contato"
+              ? "bg-primary/20 text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Mail className="h-4 w-4" />
+          <span className="underline-offset-2 hover:underline">Contate-nos</span>
+        </Link>
         <Link
           to="/perfil"
           className={`flex items-center gap-2 rounded-full px-3 py-2 ${

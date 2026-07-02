@@ -1,10 +1,17 @@
-export const API_BASE = "https://vpb-praticas.onrender.com";
+const DEFAULT_API_BASE = "http://localhost:8000";
+
+export const API_BASE = (import.meta.env.VITE_API_BASE ?? DEFAULT_API_BASE).replace(
+  /\/+$/,
+  "",
+);
 
 export async function apiFetch<T = unknown>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  const res = await fetch(`${API_BASE}${normalizedPath}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",

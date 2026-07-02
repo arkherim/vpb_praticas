@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Trash2, Plus, Pencil, AlertTriangle, Check } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/users.ts";
+import { getSession } from "@/lib/users";
 
 import { TypeBadge } from "@/components/TypeBadge";
 

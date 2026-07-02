@@ -36,7 +36,7 @@ import {
   categoriesQueryOptions, type Category,
 } from "@/lib/categories";
 import { formatBRL } from "@/lib/mockDashboard";
-import { getSession } from "@/lib/users.ts";
+import { getSession } from "@/lib/users";
 
 export const Route = createFileRoute("/transacoes")({
   head: () => ({ meta: [{ title: "Transações — VPB" }] }),
@@ -225,15 +225,28 @@ function TransactionsPage() {
   const { data: allAccounts = [] } = useSuspenseQuery({ ...accountsQueryOptions, retry: false });
   const { data: allCategories = [] } = useSuspenseQuery({ ...categoriesQueryOptions, retry: false });
   const sessionId = getSession()?.id;
-  const [period, setPeriod] = useState<string>(() => new Date().toISOString().slice(0, 7));
+  const [dateMode, setDateMode] = useState<"month" | "day">("month");
+  const [period, setPeriod] = useState<string>("all");
+  const [search, setSearch] = useState("");
   const accounts = sessionId != null
     ? allAccounts.filter((a) => a.user_id === sessionId)
     : [];
   const userAccountIds = new Set(accounts.map((a) => a.id));
   const scopedTx = allTransactions.filter((t) => userAccountIds.has(t.account_id));
-  const transactions = period === "all"
+  const byPeriod = period === "all"
     ? scopedTx
-    : scopedTx.filter((t) => (t.date ?? "").slice(0, 7) === period);
+    : scopedTx.filter((t) => {
+        const d = (t.date ?? "");
+        return dateMode === "month" ? d.slice(0, 7) === period : d.slice(0, 10) === period;
+      });
+  const term = search.trim().toLowerCase();
+  const transactions = term
+    ? byPeriod.filter((t) => {
+        const desc = (t.description ?? "").toLowerCase();
+        const catName = (allCategories.find((c) => c.id === t.category_id)?.name ?? "").toLowerCase();
+        return desc.includes(term) || catName.includes(term);
+      })
+    : byPeriod;
   const categories = allCategories.filter(
     (c) => c.user_id == null || (sessionId != null && c.user_id === sessionId),
   );
@@ -319,9 +332,41 @@ function TransactionsPage() {
 
       <div className="flex flex-wrap items-end gap-3 rounded-2xl bg-card/60 p-4 ring-1 ring-white/5">
         <div className="space-y-1">
-          <label className="text-xs uppercase tracking-wide text-muted-foreground">Mês</label>
+          <label className="text-xs uppercase tracking-wide text-muted-foreground">Buscar</label>
           <Input
-            type="month"
+            type="search"
+            placeholder="Descrição ou categoria..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-64"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs uppercase tracking-wide text-muted-foreground">Filtrar por</label>
+          <Select
+            value={dateMode}
+            onValueChange={(v: "month" | "day") => {
+              setDateMode(v);
+              setPeriod(
+                v === "month"
+                  ? new Date().toISOString().slice(0, 7)
+                  : new Date().toISOString().slice(0, 10),
+              );
+            }}
+          >
+            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="month">Mês</SelectItem>
+              <SelectItem value="day">Dia</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs uppercase tracking-wide text-muted-foreground">
+            {dateMode === "month" ? "Mês" : "Data"}
+          </label>
+          <Input
+            type={dateMode === "month" ? "month" : "date"}
             value={period === "all" ? "" : period}
             onChange={(e) => setPeriod(e.target.value || "all")}
             className="w-44"
@@ -339,14 +384,29 @@ function TransactionsPage() {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setPeriod(new Date().toISOString().slice(0, 7))}
+          onClick={() => {
+            setDateMode("month");
+            setPeriod(new Date().toISOString().slice(0, 7));
+          }}
         >
           Mês atual
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setDateMode("day");
+            setPeriod(new Date().toISOString().slice(0, 10));
+          }}
+        >
+          Hoje
         </Button>
         <div className="ml-auto text-sm text-muted-foreground">
           {transactions.length} {transactions.length === 1 ? "transação" : "transações"}
         </div>
       </div>
+
 
       {error ? (
         <div className="rounded-2xl bg-card/70 p-6 text-sm text-muted-foreground ring-1 ring-white/5">

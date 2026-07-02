@@ -7,7 +7,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { clearSession, deleteUser, getSession, type LoginResponse } from "@/lib/users.ts";
+import { clearSession, deleteUser, getSession, type LoginResponse } from "@/lib/users";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Sua Conta — VPB" }] }),

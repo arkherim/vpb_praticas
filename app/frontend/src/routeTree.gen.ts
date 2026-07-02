@@ -14,6 +14,7 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ContasRouteImport } from './routes/contas'
 import { Route as CategoriasRouteImport } from './routes/categorias'
 import { Route as CadastroRouteImport } from './routes/cadastro'
@@ -43,6 +44,11 @@ const LoginRoute = LoginRouteImport.update({
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContasRoute = ContasRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/categorias': typeof CategoriasRoute
   '/contas': typeof ContasRoute
+  '/contato': typeof ContatoRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/categorias': typeof CategoriasRoute
   '/contas': typeof ContasRoute
+  '/contato': typeof ContatoRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/categorias': typeof CategoriasRoute
   '/contas': typeof ContasRoute
+  '/contato': typeof ContatoRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/categorias'
     | '/contas'
+    | '/contato'
     | '/historico'
     | '/login'
     | '/perfil'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/categorias'
     | '/contas'
+    | '/contato'
     | '/historico'
     | '/login'
     | '/perfil'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/categorias'
     | '/contas'
+    | '/contato'
     | '/historico'
     | '/login'
     | '/perfil'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   CadastroRoute: typeof CadastroRoute
   CategoriasRoute: typeof CategoriasRoute
   ContasRoute: typeof ContasRoute
+  ContatoRoute: typeof ContatoRoute
   HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/historico'
       fullPath: '/historico'
       preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contas': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroRoute: CadastroRoute,
   CategoriasRoute: CategoriasRoute,
   ContasRoute: ContasRoute,
+  ContatoRoute: ContatoRoute,
   HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
