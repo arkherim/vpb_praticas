@@ -6,7 +6,6 @@ from fastapi import HTTPException
 MAILERSEND_EMAIL_ENDPOINT = "https://api.mailersend.com/v1/email"
 CONTACT_SUBJECT = "Mensagem da pagina de contato"
 CONTACT_RECIPIENTS = [
-    {"email": "biancaaparecidapaz26@gmail.com"},
     {"email": "victor.lermen@unoesc.edu.br"},
 ]
 
