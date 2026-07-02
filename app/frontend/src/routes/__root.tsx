@@ -16,6 +16,7 @@ import {
 import { getSession, clearSession, type LoginResponse } from "@/lib/users";
 
 import appCss from "../styles.css?url";
+import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -33,9 +34,8 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
-
   useEffect(() => {
-    console.error("Root error boundary caught an error", error);
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
   return (
     <div className="grid min-h-screen place-items-center bg-triangles px-4 text-center">
@@ -64,6 +64,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "VPB Finanças — Painel" },
       { property: "og:description", content: "Painel financeiro VPB com agendamentos e contas." },
       { name: "twitter:description", content: "Painel financeiro VPB com agendamentos e contas." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/752b2443-1e69-4a73-8679-49f03f2704e6/id-preview-6fac860d--e7c5b6ae-9c18-4a0e-ab8a-6c22ff872f29.lovable.app-1782161051819.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/752b2443-1e69-4a73-8679-49f03f2704e6/id-preview-6fac860d--e7c5b6ae-9c18-4a0e-ab8a-6c22ff872f29.lovable.app-1782161051819.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useQuery, useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSuspenseQuery, useQuery, useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
@@ -25,6 +25,7 @@ import {
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Dashboard — VPB" }] }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(accountsQueryOptions),
   component: DashboardPage,
   errorComponent: ({ error }) => (
     <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
@@ -44,8 +45,7 @@ const isPending = (s: string | null | undefined) => {
 };
 
 function DashboardPage() {
-  const accountsQuery = useQuery({ ...accountsQueryOptions, retry: false });
-  const allAccounts = accountsQuery.data ?? [];
+  const { data: allAccounts } = useSuspenseQuery(accountsQueryOptions);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const sessionId = mounted ? getSession()?.id ?? null : null;
@@ -189,11 +189,7 @@ function DashboardPage() {
           </p>
         </div>
 
-        {accountsQuery.isError ? (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {(accountsQuery.error as Error).message}
-          </div>
-        ) : accounts.length > 0 ? (
+        {accounts.length > 0 ? (
           <div className="w-64">
             <label className="mb-1 block text-xs uppercase tracking-wide text-muted-foreground">
               Conta
