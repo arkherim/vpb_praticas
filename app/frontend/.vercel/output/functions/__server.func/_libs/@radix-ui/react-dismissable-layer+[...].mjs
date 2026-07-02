@@ -3,7 +3,7 @@ import { c as composeEventHandlers } from "../radix-ui__primitive.mjs";
 import { P as Primitive, d as dispatchDiscreteCustomEvent } from "../radix-ui__react-primitive.mjs";
 import { u as useComposedRefs } from "../radix-ui__react-compose-refs.mjs";
 import { u as useCallbackRef } from "./react-use-callback-ref+[...].mjs";
-import { u as useEscapeKeydown } from "./react-use-escape-keydown+[...].mjs";
+import { u as useEffectEvent } from "./react-use-effect-event+[...].mjs";
 var DISMISSABLE_LAYER_NAME = "DismissableLayer";
 var CONTEXT_UPDATE = "dismissableLayer.update";
 var POINTER_DOWN_OUTSIDE = "dismissableLayer.pointerDownOutside";
@@ -36,7 +36,7 @@ var DismissableLayer = reactExports.forwardRef(
     const [node, setNode] = reactExports.useState(null);
     const ownerDocument = node?.ownerDocument ?? globalThis?.document;
     const [, force] = reactExports.useState({});
-    const composedRefs = useComposedRefs(forwardedRef, (node2) => setNode(node2));
+    const composedRefs = useComposedRefs(forwardedRef, setNode);
     const layers = Array.from(context.layers);
     const [highestLayerWithOutsidePointerEventsDisabled] = [...context.layersWithOutsidePointerEventsDisabled].slice(-1);
     const highestLayerWithOutsidePointerEventsDisabledIndex = layers.indexOf(highestLayerWithOutsidePointerEventsDisabled);
@@ -76,15 +76,24 @@ var DismissableLayer = reactExports.forwardRef(
       onInteractOutside?.(event);
       if (!event.defaultPrevented) onDismiss?.();
     }, ownerDocument);
-    useEscapeKeydown((event) => {
-      const isHighestLayer = index === context.layers.size - 1;
-      if (!isHighestLayer) return;
+    const isHighestLayer = node ? index === layers.length - 1 : false;
+    const handleKeyDown = useEffectEvent((event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
       onEscapeKeyDown?.(event);
       if (!event.defaultPrevented && onDismiss) {
         event.preventDefault();
         onDismiss();
       }
-    }, ownerDocument);
+    });
+    reactExports.useEffect(() => {
+      if (!isHighestLayer) {
+        return;
+      }
+      ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
+      return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
+    }, [ownerDocument, isHighestLayer]);
     reactExports.useEffect(() => {
       if (!node) return;
       if (disableOutsidePointerEvents) {

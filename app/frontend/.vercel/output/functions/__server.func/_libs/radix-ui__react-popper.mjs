@@ -93,7 +93,7 @@ var PopperContent = reactExports.forwardRef(
     } = props;
     const context = usePopperContext(CONTENT_NAME, __scopePopper);
     const [content, setContent] = reactExports.useState(null);
-    const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
+    const composedRefs = useComposedRefs(forwardedRef, setContent);
     const [arrow$1, setArrow] = reactExports.useState(null);
     const arrowSize = useSize(arrow$1);
     const arrowWidth = arrowSize?.width ?? 0;

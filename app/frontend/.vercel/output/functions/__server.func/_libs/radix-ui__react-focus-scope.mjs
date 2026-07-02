@@ -18,7 +18,7 @@ var FocusScope = reactExports.forwardRef((props, forwardedRef) => {
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
   const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
   const lastFocusedElementRef = reactExports.useRef(null);
-  const composedRefs = useComposedRefs(forwardedRef, (node) => setContainer(node));
+  const composedRefs = useComposedRefs(forwardedRef, setContainer);
   const focusScope = reactExports.useRef({
     paused: false,
     pause() {

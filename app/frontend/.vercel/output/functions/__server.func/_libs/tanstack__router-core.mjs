@@ -92,8 +92,9 @@ function isModuleNotFoundError(error) {
 function isPromise(value) {
   return Boolean(value && typeof value === "object" && typeof value.then === "function");
 }
+const PATH_UNSAFE_RE = /[\x00-\x1f\x7f"<>`{}]/g;
 function sanitizePathSegment(segment) {
-  return segment.replace(/[\x00-\x1f\x7f]/g, "");
+  return segment.replace(PATH_UNSAFE_RE, (ch) => "%" + ch.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0"));
 }
 function decodeSegment(segment) {
   let decoded;
@@ -2046,6 +2047,7 @@ var RouterCore = class {
     this.isViewTransitionTypesSupported = void 0;
     this.subscribers = /* @__PURE__ */ new Set();
     this.routeBranchCache = /* @__PURE__ */ new WeakMap();
+    this.lightweightCache = /* @__PURE__ */ new WeakMap();
     this.startTransition = (fn) => fn();
     this.update = (newOptions) => {
       const prevOptions = this.options;
@@ -2410,7 +2412,7 @@ var RouterCore = class {
         hashScrollIntoView,
         ignoreBlocker
       });
-      Promise.resolve().then(() => {
+      queueMicrotask(() => {
         if (this.pendingBuiltLocation === location) this.pendingBuiltLocation = void 0;
       });
       return commitPromise;
@@ -2434,7 +2436,7 @@ var RouterCore = class {
         }
         const reloadHref = !hrefIsUrl && publicHref ? publicHref : href;
         if (isDangerousProtocol(reloadHref, this.protocolAllowlist)) {
-          return Promise.resolve();
+          return;
         }
         if (!rest.ignoreBlocker) {
           const blockers = this.history.getBlockers?.() ?? [];
@@ -2443,12 +2445,12 @@ var RouterCore = class {
               currentLocation: this.latestLocation,
               nextLocation: this.latestLocation,
               action: "PUSH"
-            })) return Promise.resolve();
+            })) return;
           }
         }
         if (rest.replace) window.location.replace(reloadHref);
         else window.location.href = reloadHref;
-        return Promise.resolve();
+        return;
       }
       return this.buildAndCommitLocation({
         ...rest,
@@ -2956,6 +2958,9 @@ var RouterCore = class {
   * operations like AbortController, ControlledPromise, loaderDeps, and full match objects.
   */
   matchRoutesLightweight(location) {
+    const lastStateMatchId = last(this.stores.matchesId.get());
+    const cached = this.lightweightCache.get(location);
+    if (cached && cached[0] === lastStateMatchId) return cached[1];
     const { matchedRoutes, routeParams } = this.getMatchedRoutes(location.pathname);
     const lastRoute = last(matchedRoutes);
     const accumulatedSearch = { ...location.search };
@@ -2963,7 +2968,6 @@ var RouterCore = class {
       Object.assign(accumulatedSearch, validateSearch(route.options.validateSearch, accumulatedSearch));
     } catch {
     }
-    const lastStateMatchId = last(this.stores.matchesId.get());
     const lastStateMatch = lastStateMatchId && this.stores.matchStores.get(lastStateMatchId)?.get();
     const canReuseParams = lastStateMatch && lastStateMatch.routeId === lastRoute.id && lastStateMatch.pathname === location.pathname;
     let params;
@@ -2976,12 +2980,14 @@ var RouterCore = class {
       }
       params = strictParams;
     }
-    return {
+    const result = {
       matchedRoutes,
       fullPath: lastRoute.fullPath,
       search: accumulatedSearch,
       params
     };
+    this.lightweightCache.set(location, [lastStateMatchId, result]);
+    return result;
   }
 };
 var SearchParamError = class extends Error {
