@@ -81,6 +81,7 @@ app/frontend/.nitro
 app/frontend/*.local
 app/frontend/.wrangler/
 app/frontend/.dev.vars
+app/frontend/.vercel/
 app/frontend/.vscode/*
 !app/frontend/.vscode/extensions.json
 app/frontend/.idea
