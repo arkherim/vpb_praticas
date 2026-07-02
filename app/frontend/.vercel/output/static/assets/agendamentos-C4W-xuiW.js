@@ -1,1 +1,0 @@
-import{j as r}from"./index-BXWwTT3w.js";const o=({error:e})=>r.jsx("div",{className:"rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive",children:e.message});export{o as errorComponent};

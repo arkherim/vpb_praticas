@@ -1,1 +1,0 @@
-import{j as t,H as o,I as e}from"./index-BXWwTT3w.js";o({name:e().min(1,"Nome obrigatório"),description:e().optional()});const i=({error:r})=>t.jsx("div",{className:"rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive",children:r.message});export{i as errorComponent};
