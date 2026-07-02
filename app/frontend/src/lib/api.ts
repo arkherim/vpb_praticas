@@ -1,4 +1,6 @@
-const DEFAULT_API_BASE = "http://localhost:8000";
+const DEFAULT_API_BASE = import.meta.env.DEV
+  ? "http://localhost:8000"
+  : "https://vpb-praticas.onrender.com";
 
 export const API_BASE = (import.meta.env.VITE_API_BASE ?? DEFAULT_API_BASE).replace(
   /\/+$/,
